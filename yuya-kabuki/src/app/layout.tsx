@@ -3,6 +3,7 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ModeToggle from "@/components/ModeToggle";
+import { SkipToContent } from "@/components/common/SkipToContent";
 
 export const metadata: Metadata = {
   title: "傾奇ユウヤ - AI解説VTuber",
@@ -41,6 +42,9 @@ export default function RootLayout({
   return (
     <html lang="ja" className="dark">
       <body className="font-gothic min-h-screen bg-vampire-night text-text-primary">
+        {/* スキップリンク */}
+        <SkipToContent />
+
         {/* 背景エフェクト */}
         <div className="fixed inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-vampire-shadow/10 to-vampire-night/50"></div>
@@ -55,7 +59,7 @@ export default function RootLayout({
         <Navigation />
 
         {/* メインコンテンツ */}
-        <main className="relative z-10 min-h-screen">
+        <main id="main-content" className="relative z-10 min-h-screen">
           {children}
         </main>
 
