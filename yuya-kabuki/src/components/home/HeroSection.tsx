@@ -188,17 +188,40 @@ const HeroSection = () => {
             className="relative flex items-center justify-center"
           >
             <div className="relative w-96 h-96">
-              {/* キャラクターイメージプレースホルダー */}
-              <div className="absolute inset-0 glass-card rounded-full flex items-center justify-center">
-                <Image
-                  src="/images/yuya-hero.png"
-                  alt="傾奇ユウヤ - クール系ショタ吸血鬼VTuber。ダークな装いに紫のアクセント、鋭い牙と赤い瞳が特徴"
-                  width={400}
-                  height={400}
-                  className="object-contain animate-float"
-                  priority
-                />
-              </div>
+              {/* キャラクター画像 */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="relative"
+              >
+                <div className="relative w-[400px] h-[400px]">
+                  {/* グロー効果の背景 */}
+                  <div className="absolute inset-0 bg-vampire-accent/30 rounded-full blur-3xl animate-pulse"></div>
+                  <div className="absolute inset-[-20px] bg-gradient-to-br from-vampire-accent/20 to-vampire-blood/20 rounded-full blur-2xl animate-float"></div>
+                  
+                  {/* 画像コンテナ */}
+                  <div className="relative w-full h-full rounded-full overflow-hidden">
+                    {/* ぼやけたエッジ効果のマスク */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-radial from-transparent via-transparent to-vampire-night/80 z-10 pointer-events-none"></div>
+                    
+                    <Image
+                      src="/images/yuya-hero.jpg"
+                      alt="傾奇ユウヤ - クール系ショタ吸血鬼VTuber。ダークな装いに紫のアクセント、鋭い牙と赤い瞳が特徴"
+                      width={600}
+                      height={600}
+                      className="object-cover w-full h-full animate-float scale-110"
+                      priority
+                    />
+                    
+                    {/* 内側のグロー効果 */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-radial from-transparent via-vampire-accent/10 to-vampire-accent/30 mix-blend-screen"></div>
+                  </div>
+                  
+                  {/* 外側のリング効果 */}
+                  <div className="absolute inset-[-2px] rounded-full bg-gradient-to-br from-vampire-accent/50 via-vampire-blood/30 to-transparent animate-spin-slow"></div>
+                </div>
+              </motion.div>
               
               {/* 装飾的な要素 */}
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-vampire-accent/20 rounded-full filter blur-xl animate-pulse-slow"></div>

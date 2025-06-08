@@ -78,7 +78,7 @@ const Navigation = () => {
                   className={`relative px-4 py-2 rounded-lg transition-all duration-300 group ${
                     isActive
                       ? "text-vampire-accent"
-                      : "text-text-secondary hover:text-text-primary"
+                      : "text-gray-400 hover:text-white"
                   }`}
                 >
                   <span className="flex items-center space-x-2">
@@ -137,7 +137,7 @@ const Navigation = () => {
                       className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
                         isActive
                           ? "bg-vampire-accent/20 text-vampire-accent"
-                          : "hover:bg-vampire-accent/10 text-text-secondary hover:text-text-primary"
+                          : "hover:bg-vampire-accent/10 text-gray-400 hover:text-white"
                       }`}
                     >
                       {link.icon}
