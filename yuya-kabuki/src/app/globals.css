@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: oklch(15% 0.02 250);
+    --foreground: oklch(95% 0 0);
+    --vampire-blood: oklch(45% 0.3 25);
+    --vampire-night: oklch(15% 0.02 250);
+    --vampire-moon: oklch(85% 0.02 250);
+    --vampire-shadow: oklch(25% 0.05 250);
+    --vampire-accent: oklch(60% 0.25 280);
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-vampire-night text-text-primary overflow-x-hidden;
+    background: linear-gradient(135deg, var(--vampire-night) 0%, rgba(45, 0, 75, 0.2) 100%);
+    min-height: 100vh;
+  }
+
+  /* カスタムスクロールバー */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-vampire-night;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-vampire-accent rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary-light;
+  }
+
+  /* テキスト選択時のスタイル */
+  ::selection {
+    @apply bg-vampire-accent text-white;
+  }
+
+  /* カスタムフォーカススタイル */
+  *:focus {
+    @apply outline-none;
+  }
+
+  *:focus-visible {
+    @apply ring-2 ring-vampire-accent ring-opacity-50;
+  }
+}
+
+@layer components {
+  /* グラデーションテキスト */
+  .gradient-text {
+    @apply bg-gradient-to-r from-vampire-accent to-vampire-blood bg-clip-text text-transparent;
+  }
+
+  /* ネオンテキスト効果 */
+  .neon-text {
+    text-shadow: 
+      0 0 10px var(--vampire-accent),
+      0 0 20px var(--vampire-accent),
+      0 0 30px var(--vampire-accent);
+  }
+
+  /* グロー効果のボタン */
+  .glow-button {
+    @apply relative overflow-hidden transition-all duration-300;
+    background: linear-gradient(135deg, var(--vampire-accent) 0%, var(--vampire-blood) 100%);
+  }
+
+  .glow-button::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  }
+
+  .glow-button:hover::before {
+    @apply opacity-100;
+  }
+
+  /* カード効果 */
+  .glass-card {
+    @apply backdrop-blur-lg bg-vampire-night/20 border border-vampire-accent/20;
+    box-shadow: 
+      0 8px 32px 0 rgba(31, 38, 135, 0.37),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  /* 血のドリップアニメーション */
+  .blood-drip {
+    position: relative;
+  }
+
+  .blood-drip::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 10px;
+    background: var(--vampire-blood);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: drip 2s ease-in-out infinite;
+  }
+
+  @keyframes drip {
+    0% {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+    }
+  }
+}
+
+@layer utilities {
+  /* テキストストローク */
+  .text-stroke {
+    -webkit-text-stroke: 1px var(--vampire-accent);
+    text-stroke: 1px var(--vampire-accent);
+  }
+
+  /* グラデーション背景 */
+  .bg-vampire-gradient {
+    background: linear-gradient(135deg, var(--vampire-night) 0%, var(--vampire-blood) 100%);
+  }
+
+  /* アニメーション遅延クラス */
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+}

@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+本システムは、2つのホームページと1つのCRMが複合しているプロジェクトとなります。
+/yuya-kabuki配下：傾奇ユウヤの公式ホームページ
+/aoba-nekosora配下：猫空あおばの公式ホームページ
+/cms：上記2つのページのCMS
+
+それぞれでNext.jsのプロジェクトを作っております。
+各種仕様はそれぞれのディレクトリ直下にあるdocument.mdを参照してください。
