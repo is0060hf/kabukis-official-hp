@@ -1,1 +1,5 @@
 .idea/
+
+# Claude AI関連
+*.claude-tmp
+claude-debug.log

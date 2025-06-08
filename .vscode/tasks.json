@@ -1,0 +1,198 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Claude: 現在のファイルをレビュー",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--print",
+        "以下のファイルをレビューしてください。バグ、改善点、WCAG 2.2準拠、既存コンポーネントの活用について確認してください：\n\n${file}の内容:\n$(cat '${file}')"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude: git diffをレビュー",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--print",
+        "以下のgit diffをレビューしてください。バグ、改善点、既存コンポーネントの活用について確認してください：\n\n$(git diff)"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude: ステージング済みの変更をレビュー",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--print",
+        "以下のステージング済みの変更をレビューしてください。バグ、改善点、既存コンポーネントの活用について確認してください：\n\n$(git diff --cached)"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude: 現在のファイルのテストを生成",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--print",
+        "以下のファイルのJestテストを生成してください。Next.js 15環境でのテストを考慮してください：\n\n${file}の内容:\n$(cat '${file}')"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude: プロジェクト構造を分析",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--print",
+        "現在のプロジェクト構造を分析してください。改善点や重複、整理が必要な箇所を特定してください：\n\n$(find . -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx' | grep -v node_modules | head -100)"
+      ],
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude: 現在のファイルのリファクタリング提案",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--print",
+        "以下のファイルのリファクタリング提案をしてください。可読性、パフォーマンス、保守性の観点から改善点を提示してください：\n\n${file}の内容:\n$(cat '${file}')"
+      ],
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude: WCAG 2.2アクセシビリティチェック",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--print",
+        "以下のファイルのWCAG 2.2準拠をチェックしてください。アクセシビリティの問題と改善案を提示してください：\n\n${file}の内容:\n$(cat '${file}')"
+      ],
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude: コンポーネントドキュメント生成",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--print",
+        "以下のコンポーネントのドキュメント（JSDoc/TSDoc）を生成してください。Props、使用方法、例を含めてください：\n\n${file}の内容:\n$(cat '${file}')"
+      ],
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude: セキュリティチェック",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--print",
+        "以下のファイルのセキュリティ問題をチェックしてください。XSS、CSRF、SQLインジェクションなどの脆弱性を確認してください：\n\n${file}の内容:\n$(cat '${file}')"
+      ],
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude: パフォーマンス最適化提案",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--print",
+        "以下のファイルのパフォーマンス最適化を提案してください。Next.js 15のベストプラクティスを考慮してください：\n\n${file}の内容:\n$(cat '${file}')"
+      ],
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    }
+  ]
+} 
