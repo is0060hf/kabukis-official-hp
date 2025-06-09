@@ -55,11 +55,11 @@ const ModeToggle = () => {
   }, [isOpen]);
 
   return (
-    <div id="mode-toggle" className="fixed top-4 right-4 z-50">
+    <div id="mode-toggle" className="fixed top-20 right-4 md:top-4 md:right-4 z-60">
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          relative px-4 py-2 rounded-full 
+          relative px-3 py-2 md:px-4 md:py-2 rounded-full 
           bg-gradient-to-r ${currentMode.gradient} 
           text-white font-medium text-sm
           shadow-lg hover:shadow-xl
@@ -70,7 +70,8 @@ const ModeToggle = () => {
         whileTap={{ scale: 0.95 }}
       >
         {currentMode.icon}
-        <span>{currentMode.label}</span>
+        <span className="hidden sm:inline">{currentMode.label}</span>
+        <span className="sm:hidden">{currentMode.id === 'entertainment' ? 'ファン' : '事業'}</span>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
@@ -89,7 +90,7 @@ const ModeToggle = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full right-0 mt-2 w-72 glass-card rounded-lg overflow-hidden"
+            className="absolute top-full right-0 mt-2 w-80 sm:w-72 glass-card rounded-lg overflow-hidden max-w-[calc(100vw-2rem)]"
           >
             <div className="p-1">
               {modes.map((mode) => {
