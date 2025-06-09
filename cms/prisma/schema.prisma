@@ -1,0 +1,333 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========== 認証・ユーザー管理 ==========
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  profile  UserProfile?
+  
+  // 関連付け
+  assignedLeads    Lead[]      @relation("AssignedLeads")
+  assignedInquiries Inquiry[]  @relation("AssignedInquiries")
+  inquiries        Inquiry[]   @relation("UserInquiries")
+  contentAnalytics ContentAnalytics[]
+  
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model UserProfile {
+  id                String           @id @default(cuid())
+  userId            String           @unique
+  displayName       String?
+  bio               String?
+  websiteUrl        String?
+  twitterHandle     String?
+  discordId         String?
+  preferredCharacter CharacterType   @default(BOTH)
+  subscriptionTier  SubscriptionTier @default(FREE)
+  totalSpent        Decimal          @default(0)
+  lastActivity      DateTime?
+  marketingConsent  Boolean          @default(false)
+  isAdmin           Boolean          @default(false)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+// ========== 顧客・リード管理 ==========
+model Lead {
+  id               String     @id @default(cuid())
+  email            String
+  name             String?
+  company          String?
+  jobTitle         String?
+  phone            String?
+  source           LeadSource
+  sourceDomain     String?    // 'yuya-kabuki.com' or 'aoba-nekosora.com'
+  sourcePage       String?    // 具体的な流入ページ
+  leadType         LeadType
+  status           LeadStatus @default(NEW)
+  priority         Priority   @default(MEDIUM)
+  estimatedValue   Decimal?
+  expectedCloseDate DateTime?
+  assignedToId     String?
+  notes            String?
+  gdprConsent      Boolean    @default(false)
+  consentDate      DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  assignedTo User?     @relation("AssignedLeads", fields: [assignedToId], references: [id])
+  inquiries  Inquiry[]
+  
+  @@map("leads")
+}
+
+model Inquiry {
+  id              String       @id @default(cuid())
+  leadId          String?
+  userId          String?
+  inquiryType     InquiryType
+  subject         String
+  message         String
+  attachments     Json?        // ファイル情報のJSON配列
+  status          InquiryStatus @default(OPEN)
+  priority        Priority      @default(MEDIUM)
+  assignedToId    String?
+  responseTimeSla Int?          // 応答時間SLA（時間）
+  firstResponseAt DateTime?
+  resolvedAt      DateTime?
+  satisfactionRating Int?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  lead       Lead?  @relation(fields: [leadId], references: [id])
+  user       User?  @relation("UserInquiries", fields: [userId], references: [id])
+  assignedTo User?  @relation("AssignedInquiries", fields: [assignedToId], references: [id])
+  
+  @@map("inquiries")
+}
+
+// ========== コンテンツ管理 ==========
+model Content {
+  id            String         @id @default(cuid())
+  title         String
+  slug          String         @unique
+  content       String?
+  excerpt       String?
+  characterOwner CharacterOwner
+  contentType   ContentType
+  status        ContentStatus  @default(DRAFT)
+  featured      Boolean        @default(false)
+  viewCount     Int            @default(0)
+  likeCount     Int            @default(0)
+  downloadCount Int            @default(0)
+  seoTitle      String?
+  seoDescription String?
+  tags          Json?          // タグ配列
+  metadata      Json?          // 追加メタデータ
+  publishedAt   DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  categories ContentCategory[]
+  analytics  ContentAnalytics[]
+  
+  @@map("contents")
+}
+
+model ContentCategory {
+  id             String         @id @default(cuid())
+  name           String
+  slug           String         @unique
+  characterScope CharacterOwner
+  description    String?
+  parentId       String?
+  sortOrder      Int            @default(0)
+  createdAt      DateTime       @default(now())
+
+  parent   ContentCategory?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children ContentCategory[] @relation("CategoryTree")
+  contents Content[]
+  
+  @@map("content_categories")
+}
+
+model ContentAnalytics {
+  id         String      @id @default(cuid())
+  contentId  String
+  userId     String?
+  eventType  EventType
+  referrer   String?
+  userAgent  String?
+  ipAddress  String?
+  sessionId  String?
+  createdAt  DateTime    @default(now())
+
+  content Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id])
+  
+  @@map("content_analytics")
+}
+
+// ========== 配信スケジュール管理 ==========
+model StreamSchedule {
+  id              String         @id @default(cuid())
+  title           String
+  description     String?
+  characterOwner  CharacterOwner
+  streamType      StreamType
+  scheduledDate   DateTime
+  duration        Int?           // 分単位
+  platform        String         // YouTube, Twitch, etc.
+  streamUrl       String?
+  thumbnailUrl    String?
+  isRecurring     Boolean        @default(false)
+  recurringPattern Json?         // 繰り返しパターン
+  status          StreamStatus   @default(SCHEDULED)
+  notified        Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  
+  @@map("stream_schedules")
+}
+
+// ========== Enums ==========
+enum CharacterType {
+  YUYA
+  AOBA
+  BOTH
+}
+
+enum SubscriptionTier {
+  FREE
+  SUPPORTER
+  PREMIUM
+}
+
+enum LeadSource {
+  YUYA_SITE
+  AOBA_SITE
+  REFERRAL
+  SOCIAL
+  DIRECT
+}
+
+enum LeadType {
+  B2B_CONSULTATION
+  TOOL_INTEREST
+  COLLABORATION
+  MUSIC_LICENSING
+  OTHER
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum InquiryType {
+  GENERAL
+  TECHNICAL_SUPPORT
+  BUSINESS
+  COLLABORATION
+  LICENSING
+  BUG_REPORT
+}
+
+enum InquiryStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum CharacterOwner {
+  YUYA
+  AOBA
+  SHARED
+}
+
+enum ContentType {
+  BLOG
+  TOOL
+  MUSIC
+  VIDEO
+  DOCUMENTATION
+  CASE_STUDY
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum EventType {
+  VIEW
+  LIKE
+  SHARE
+  DOWNLOAD
+  COMMENT
+}
+
+enum StreamType {
+  GAMING
+  ASMR
+  MUSIC
+  COLLAB
+  SPECIAL
+}
+
+enum StreamStatus {
+  SCHEDULED
+  LIVE
+  COMPLETED
+  CANCELLED
+} 

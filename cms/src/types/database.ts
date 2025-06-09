@@ -1,0 +1,12 @@
+// Prismaで定義されているEnum型
+export type CharacterOwner = 'YUYA' | 'AOBA' | 'SHARED'
+export type ContentType = 'BLOG' | 'TOOL' | 'MUSIC' | 'VIDEO' | 'DOCUMENTATION' | 'CASE_STUDY'
+export type ContentStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'
+export type LeadSource = 'YUYA_SITE' | 'AOBA_SITE' | 'REFERRAL' | 'SOCIAL' | 'DIRECT'
+export type LeadType = 'B2B_CONSULTATION' | 'TOOL_INTEREST' | 'COLLABORATION' | 'MUSIC_LICENSING' | 'OTHER'
+export type LeadStatus = 'NEW' | 'CONTACTED' | 'QUALIFIED' | 'PROPOSAL' | 'NEGOTIATION' | 'WON' | 'LOST'
+export type Priority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
+export type InquiryType = 'GENERAL' | 'TECHNICAL_SUPPORT' | 'BUSINESS' | 'COLLABORATION' | 'LICENSING' | 'BUG_REPORT'
+export type InquiryStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED'
+export type StreamType = 'GAMING' | 'ASMR' | 'MUSIC' | 'COLLAB' | 'SPECIAL'
+export type StreamStatus = 'SCHEDULED' | 'LIVE' | 'COMPLETED' | 'CANCELLED' 
