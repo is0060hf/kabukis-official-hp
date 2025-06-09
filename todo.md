@@ -92,14 +92,80 @@
 - [ ] レビュー履歴の管理システム
 - [ ] カスタムレビュープロンプトの作成
 
-## 猫空あおば (/aoba-nekosora) - 未実装
+## 猫空あおば (/aoba-nekosora) - 実装状況
 
-### 📋 実装予定
-- [ ] プロジェクトセットアップ
-- [ ] 明るい歌姫テーマのデザインシステム
-- [ ] Hero動画（hero.mp4）の実装
+### ✅ 完了
+- [x] 基本プロジェクトセットアップ (Next.js 15 + Tailwind CSS 4)
+- [x] 明るい歌姫テーマのデザインシステム構築
+  - [x] カラーパレット（melody-sky, melody-purple等）
+  - [x] カスタムアニメーション（sparkle, wave, musicNote等）
+  - [x] ガラスモーフィズムカード
+- [x] トップページ (/) の実装
+  - [x] HeroSection - Hero動画は一時的に背景グラデーションで代替
+  - [x] FeaturedMusic - 人気楽曲表示
+  - [x] LiveSchedule - 配信スケジュール
+  - [x] LatestContent - 最新ブログ記事
+  - [x] CallToAction - コミュニティ参加促進
+- [x] 共通コンポーネント
+  - [x] Navigation - エンタメ/ビジネスモード対応
+  - [x] ModeToggle - モード切替UI
+  - [x] Footer - 傾奇ユウヤサイトへの相互リンク
+  - [x] Card - 再利用可能なカードコンポーネント
+- [x] アニメーション実装 (Framer Motion)
+- [x] モックデータの作成と表示
+- [x] レスポンシブ対応
+- [x] プレースホルダー画像の設定（via.placeholder.com）
+
+### 🔧 今後の実装予定
+
+#### 未実装のページ
+- [ ] /live - ライブ配信ページ
+  - [ ] /live/schedule - 配信スケジュール詳細
+  - [ ] /live/archive - 過去配信アーカイブ
+  - [ ] /live/collab - コラボ配信
+- [ ] /content - コンテンツページ
+  - [ ] /content/music - 楽曲一覧・詳細
+  - [ ] /content/covers - 歌ってみた
+  - [ ] /content/blog - ブログ一覧・詳細
+- [ ] /community - コミュニティページ
+  - [ ] /community/discord - Discord案内
+  - [ ] /community/requests - 歌ってみたリクエスト
+- [ ] /studio - ビジネス向けページ
+  - [ ] /studio/works - 音楽制作実績
+  - [ ] /studio/services - 楽曲制作・ライセンス提供
+  - [ ] /studio/licensing - 音楽ライセンス・STEM販売
+  - [ ] /studio/contact - 事業お問い合わせ
+
+#### 機能実装
+- [ ] Hero動画の実装（hero.mp4）
 - [ ] 音楽プレーヤーシステム
-- [ ] 各ページの実装（ユウヤと同じ構造）
+- [ ] YouTube動画埋め込み
+- [ ] 検索機能
+- [ ] タグ・カテゴリフィルタ
+- [ ] ダークモード最適化（明るいテーマでも夜間モード対応）
+- [ ] PWA対応
+
+#### アセット・コンテンツ
+- [ ] キャラクター画像の追加
+  - [ ] aoba-main.png - メインビジュアル
+  - [ ] aoba-icon.png - アイコン
+  - [ ] aoba-singing.png - 歌っている姿
+- [ ] Hero動画（hero.mp4）- 5秒ループ
+- [ ] 楽曲サムネイル画像
+- [ ] OGP画像の作成
+- [ ] favicon、アイコン類
+- [ ] 実際のコンテンツデータ
+
+#### パフォーマンス・SEO
+- [ ] 画像最適化 (WebP/AVIF)
+- [ ] メタデータ最適化
+- [ ] サイトマップ生成
+- [ ] robots.txt
+- [ ] 構造化データ
+
+#### 音楽特化機能
+- [ ] フローティングプレーヤー
+- [ ] ビジュアライザー
 - [ ] STEM配布システム
 - [ ] 音楽ライセンス管理
 

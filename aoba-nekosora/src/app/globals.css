@@ -1,0 +1,265 @@
+@import "tailwindcss";
+
+/* Tailwind CSS v4 テーマ設定 - 歌姫テーマ */
+@theme {
+  /* カスタムカラー - 明るく爽やかな色調 */
+  --color-melody-sky: oklch(75% 0.2 210);      /* メインの明るいブルー #60C8FF */
+  --color-melody-purple: oklch(65% 0.18 280);  /* サブのパープル #836CD1 */
+  --color-melody-light: oklch(98% 0.01 210);   /* 明るい背景色 */
+  --color-melody-dawn: oklch(95% 0.05 30);     /* 朝焼けのような淡い色 */
+  --color-melody-accent: oklch(80% 0.15 45);   /* アクセントの黄色系 */
+  --color-melody-green: oklch(70% 0.15 140);   /* 自然を表す緑 */
+  
+  /* カスタムアニメーション */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-sparkle: sparkle 3s ease-in-out infinite;
+  --animate-wave: wave 8s ease-in-out infinite;
+  --animate-bounce-soft: bounce-soft 2s ease-in-out infinite;
+  --animate-spin-slow: spin-slow 20s linear infinite;
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  @keyframes sparkle {
+    0%, 100% { 
+      opacity: 0.8;
+      transform: scale(1) rotate(0deg);
+    }
+    50% { 
+      opacity: 1;
+      transform: scale(1.1) rotate(180deg);
+    }
+  }
+  
+  @keyframes wave {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(-10px) translateY(-5px); }
+    50% { transform: translateX(0) translateY(-10px); }
+    75% { transform: translateX(10px) translateY(-5px); }
+  }
+  
+  @keyframes bounce-soft {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+}
+
+/* カスタムCSS変数 (後方互換性のため) */
+:root {
+  --background: var(--color-melody-light);
+  --foreground: oklch(20% 0.01 210);
+  --melody-sky: var(--color-melody-sky);
+  --melody-purple: var(--color-melody-purple);
+  --melody-light: var(--color-melody-light);
+  --melody-dawn: var(--color-melody-dawn);
+  --melody-accent: var(--color-melody-accent);
+  --melody-green: var(--color-melody-green);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Yu Gothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+  color: oklch(20% 0.01 210);
+  background-color: var(--color-melody-light);
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(96, 200, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(131, 108, 209, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.8) 0%, transparent 50%);
+  min-height: 100vh;
+}
+
+/* カスタムスクロールバー */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: oklch(95% 0.01 210);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-melody-sky);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-melody-purple);
+}
+
+/* テキスト選択時のスタイル */
+::selection {
+  background: var(--color-melody-sky);
+  color: white;
+}
+
+/* カスタムフォーカススタイル */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-melody-sky);
+  outline-offset: 2px;
+}
+
+/* 音符アニメーション */
+@keyframes music-note {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-30px) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+/* 波紋エフェクト */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* グラデーションテキスト */
+.gradient-text {
+  background: linear-gradient(to right, var(--color-melody-sky), var(--color-melody-purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ソフトグロー効果 */
+.soft-glow {
+  text-shadow: 
+    0 0 10px rgba(96, 200, 255, 0.5),
+    0 0 20px rgba(96, 200, 255, 0.3),
+    0 0 30px rgba(96, 200, 255, 0.2);
+}
+
+/* メロディボタン */
+.melody-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 300ms;
+  background: linear-gradient(135deg, var(--color-melody-sky) 0%, var(--color-melody-purple) 100%);
+}
+
+.melody-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 300ms;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+}
+
+.melody-button:hover::before {
+  opacity: 1;
+}
+
+/* ガラスカード効果 */
+.glass-card {
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(96, 200, 255, 0.2);
+  box-shadow: 
+    0 8px 32px 0 rgba(31, 38, 135, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+/* 音楽ビジュアライザー風 */
+.music-visualizer {
+  position: relative;
+}
+
+.music-visualizer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(96, 200, 255, 0.2) 25%, 
+    rgba(131, 108, 209, 0.2) 50%, 
+    rgba(96, 200, 255, 0.2) 75%, 
+    transparent 100%
+  );
+  animation: wave 3s ease-in-out infinite;
+}
+
+/* パステルグラデーション背景 */
+.bg-melody-gradient {
+  background: linear-gradient(135deg, 
+    var(--color-melody-sky) 0%, 
+    var(--color-melody-purple) 50%,
+    var(--color-melody-accent) 100%
+  );
+}
+
+/* 朝焼けグラデーション */
+.bg-dawn-gradient {
+  background: linear-gradient(to bottom, 
+    var(--color-melody-dawn) 0%, 
+    var(--color-melody-sky) 100%
+  );
+}
+
+/* アニメーション遅延クラス */
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+
+/* 音符装飾 */
+.music-note-decoration {
+  position: relative;
+}
+
+.music-note-decoration::before,
+.music-note-decoration::after {
+  content: '♪';
+  position: absolute;
+  color: var(--color-melody-sky);
+  font-size: 1.5rem;
+  animation: music-note 3s ease-in-out infinite;
+}
+
+.music-note-decoration::before {
+  top: -10px;
+  left: -20px;
+  animation-delay: 0s;
+}
+
+.music-note-decoration::after {
+  top: -5px;
+  right: -20px;
+  animation-delay: 1.5s;
+} 
