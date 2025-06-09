@@ -35,7 +35,7 @@ export default function RootLayout({
     <html lang="ja">
       <body suppressHydrationWarning className="min-h-screen bg-gradient-to-br from-melody-sky/5 via-white to-melody-purple/5">
         <Navigation />
-        <main>{children}</main>
+        <main className="pt-16">{children}</main>
         <Footer />
       </body>
     </html>

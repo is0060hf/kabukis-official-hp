@@ -63,6 +63,12 @@
 - [ ] フォーム機能のユニットテスト追加（/studio/contact、/community/requests）
 - [ ] 検索・フィルター機能のテスト追加
 - [ ] mockStems等の型定義をtypes/index.tsに追加
+- [x] SiteMode型の共通化（Navigation.tsx と ModeToggle.tsx で types/index.ts から import）
+- [ ] アニメーションのパフォーマンス最適化（prefers-reduced-motion対応）
+- [ ] MusicNotes/MusicVisualizerコンポーネントのプロパティ拡張（duration、delay、colors等）
+- [ ] カラー値のCSS変数統一化
+- [ ] 長いコンポーネントファイルの分割（CommunityPage等）
+- [ ] 新規コンポーネントのテスト追加（MusicNotes、MusicVisualizer）
 
 #### 未実装の詳細ページ（完了）
 - [x] /studio/works - 制作実績詳細ページ
@@ -103,7 +109,7 @@
 ### ✅ 完了
 - [x] 基本プロジェクトセットアップ (Next.js 15 + Tailwind CSS 4)
 - [x] 明るい歌姫テーマのデザインシステム構築
-  - [x] カラーパレット（melody-sky, melody-purple等）
+  - [x] カラーパレット（melody-sky, melody-purple, melody-pink等）
   - [x] カスタムアニメーション（sparkle, wave, musicNote等）
   - [x] ガラスモーフィズムカード
 - [x] トップページ (/) の実装
@@ -117,15 +123,27 @@
   - [x] ModeToggle - モード切替UI
   - [x] Footer - 傾奇ユウヤサイトへの相互リンク
   - [x] Card - 再利用可能なカードコンポーネント
+  - [x] MusicVisualizer - 音楽ビジュアライザー
+  - [x] MusicNotes - 音符アニメーション
 - [x] アニメーション実装 (Framer Motion)
 - [x] モックデータの作成と表示
 - [x] レスポンシブ対応
 - [x] プレースホルダー画像の設定（via.placeholder.com）
+- [x] 全ページ統一デザイン実装
+  - [x] 明るく爽やかな歌姫テーマの統一
+  - [x] 音楽的視覚要素の追加
+  - [x] 傾奇ユウヤとの明確な対比デザイン
+  - [x] ビジネスエリアも明るいプロフェッショナルデザイン
 
 ### 🔧 今後の実装予定
 
 #### コード改善（Claudeレビュー推奨事項）
 - [x] SiteMode型の共通化（Navigation.tsx と ModeToggle.tsx で types/index.ts から import）
+- [ ] アニメーションのパフォーマンス最適化（prefers-reduced-motion対応）
+- [ ] MusicNotes/MusicVisualizerコンポーネントのプロパティ拡張（duration、delay、colors等）
+- [ ] カラー値のCSS変数統一化
+- [ ] 長いコンポーネントファイルの分割（CommunityPage等）
+- [ ] 新規コンポーネントのテスト追加（MusicNotes、MusicVisualizer）
 
 #### 未実装のページ（✅ 完了）
 - [x] /live - ライブ配信ページ

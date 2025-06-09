@@ -1,9 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Calendar, Clock, Users, Play, Music, Sparkles } from 'lucide-react'
+import { Calendar, Clock, Users, Play, Music, Sparkles, Headphones, Heart } from 'lucide-react'
 import Link from 'next/link'
 import Card from '@/components/common/Card'
+import MusicVisualizer from '@/components/common/MusicVisualizer'
+import MusicNotes from '@/components/common/MusicNotes'
 import { mockStreamSchedule } from '@/constants/mockData'
 import { fadeInUp, staggerContainer } from '@/utils/animations'
 import { cn } from '@/utils/cn'
@@ -30,12 +32,19 @@ export default function LivePage() {
   ]
 
   return (
-    <div className="min-h-screen pt-20">
-      {/* ヒーローセクション */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-melody-purple/20 via-melody-pink/10 to-melody-sky/20 py-20">
+    <div className="min-h-screen">
+      {/* ヒーローセクション - 明るく爽やかに */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-melody-sky/10 via-melody-light to-melody-pink/10 py-20">
+        {/* 音符アニメーション */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-1/2 -left-1/4 w-96 h-96 bg-melody-purple/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute -bottom-1/2 -right-1/4 w-96 h-96 bg-melody-pink/20 rounded-full blur-3xl animate-pulse delay-1000" />
+          <MusicNotes count={5} className="absolute top-20 left-20" />
+          <MusicNotes count={3} className="absolute bottom-20 right-20" />
+        </div>
+        
+        {/* 装飾的な円 */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-64 h-64 bg-melody-sky/10 rounded-full blur-3xl animate-pulse-soft" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-melody-pink/10 rounded-full blur-3xl animate-pulse-soft delay-1000" />
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
@@ -47,27 +56,30 @@ export default function LivePage() {
           >
             <motion.div 
               variants={fadeInUp}
-              className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full mb-6 shadow-lg"
+              className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full mb-6 shadow-lg border border-melody-sky/20"
             >
-              <Sparkles className="w-5 h-5 text-melody-purple" />
-              <span className="text-sm font-medium text-gray-700">LIVE STREAMING</span>
+              <Sparkles className="w-5 h-5 text-melody-purple animate-sparkle" />
+              <span className="text-sm font-medium bg-gradient-to-r from-melody-purple to-melody-sky bg-clip-text text-transparent">
+                LIVE STREAMING
+              </span>
+              <MusicVisualizer className="h-4" />
             </motion.div>
             
             <motion.h1 
               variants={fadeInUp}
               className="text-5xl md:text-6xl font-bold mb-6"
             >
-              <span className="bg-gradient-to-r from-melody-purple to-melody-pink bg-clip-text text-transparent">
-                Live & Events
+              <span className="bg-gradient-to-r from-melody-purple via-melody-pink to-melody-sky bg-clip-text text-transparent">
+                歌枠配信
               </span>
             </motion.h1>
             
             <motion.p 
               variants={fadeInUp}
-              className="text-xl text-gray-600 max-w-2xl mx-auto mb-8"
+              className="text-xl text-gray-700 max-w-2xl mx-auto mb-8"
             >
               あおばの歌声をリアルタイムでお届け<br/>
-              歌枠配信やコラボ企画をお楽しみください
+              みんなで一緒に音楽を楽しみましょう♪
             </motion.p>
             
             <motion.div 
@@ -76,7 +88,7 @@ export default function LivePage() {
             >
               <Link 
                 href="/live/schedule"
-                className="group bg-melody-purple hover:bg-melody-purple/90 text-white px-8 py-4 rounded-full font-medium transition-all transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-2"
+                className="group bg-gradient-to-r from-melody-purple to-melody-pink text-white px-8 py-4 rounded-full font-medium transition-all transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-2"
                 aria-label="配信スケジュールを見る"
               >
                 <Calendar className="w-5 h-5" />
@@ -84,7 +96,7 @@ export default function LivePage() {
               </Link>
               <Link 
                 href="/live/collab"
-                className="group bg-white hover:bg-gray-50 text-melody-purple px-8 py-4 rounded-full font-medium transition-all transform hover:scale-105 shadow-lg hover:shadow-xl border border-melody-purple/20 flex items-center gap-2"
+                className="group glass-card hover:bg-white/90 text-melody-purple px-8 py-4 rounded-full font-medium transition-all transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-2"
                 aria-label="コラボ配信を見る"
               >
                 <Users className="w-5 h-5" />
@@ -105,8 +117,9 @@ export default function LivePage() {
         >
           <motion.div variants={fadeInUp} className="flex items-center justify-between mb-10">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 flex items-center gap-3">
                 次回配信予定
+                <MusicVisualizer className="h-6" />
               </h2>
               <p className="text-gray-600">今週の歌枠スケジュール</p>
             </div>
@@ -123,24 +136,33 @@ export default function LivePage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {upcomingStreams.map((stream, index) => (
               <motion.div key={stream.id} variants={fadeInUp}>
-                <Card className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                <Card className="group glass-card hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden relative">
+                  {/* 音符装飾 */}
+                  <div className="absolute top-2 right-2">
+                    <MusicNotes count={1} className="w-8 h-8" />
+                  </div>
+                  
                   <div className="relative mb-6">
-                    <div className="aspect-video bg-gradient-to-br from-melody-purple/20 to-melody-pink/20 rounded-lg overflow-hidden">
+                    <div className="aspect-video bg-gradient-to-br from-melody-sky/20 to-melody-pink/20 rounded-lg overflow-hidden">
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <div className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                           <Play className="w-8 h-8 text-melody-purple ml-1" />
                         </div>
                       </div>
+                      {/* ビジュアライザー装飾 */}
+                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                        <MusicVisualizer className="h-12 opacity-60" />
+                      </div>
                     </div>
                     <span className={cn(
-                      "absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium shadow-lg",
-                      stream.type === 'singing' ? 'bg-melody-purple text-white' :
-                      stream.type === 'collaboration' ? 'bg-melody-pink text-white' :
-                      'bg-melody-sky text-white'
+                      "absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium shadow-lg backdrop-blur-sm",
+                      stream.type === 'singing' ? 'bg-melody-purple/80 text-white' :
+                      stream.type === 'collaboration' ? 'bg-melody-pink/80 text-white' :
+                      'bg-melody-sky/80 text-white'
                     )}>
-                      {stream.type === 'singing' ? '歌枠' :
-                       stream.type === 'collaboration' ? 'コラボ' :
-                       'ASMR'}
+                      {stream.type === 'singing' ? '🎤 歌枠' :
+                       stream.type === 'collaboration' ? '👥 コラボ' :
+                       '🎧 ASMR'}
                     </span>
                   </div>
                   
@@ -163,15 +185,16 @@ export default function LivePage() {
                     </div>
                   </div>
                   
-                  <div className="mt-6 pt-6 border-t border-gray-100 flex items-center justify-between">
+                  <div className="mt-6 pt-6 border-t border-melody-sky/20 flex items-center justify-between">
                     <button 
-                      className="bg-melody-purple/10 hover:bg-melody-purple/20 text-melody-purple px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2"
+                      className="bg-gradient-to-r from-melody-purple/10 to-melody-pink/10 hover:from-melody-purple/20 hover:to-melody-pink/20 text-melody-purple px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2"
                       aria-label="リマインダーを設定"
                     >
                       <Clock className="w-4 h-4" />
                       リマインダー
                     </button>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 flex items-center gap-1">
+                      <Headphones className="w-3 h-3" />
                       {stream.duration}
                     </span>
                   </div>
@@ -208,7 +231,7 @@ export default function LivePage() {
           <div className="grid gap-6 md:grid-cols-2">
             {recentStreams.map((stream, index) => (
               <motion.div key={stream.id} variants={fadeInUp}>
-                <Card className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <Card className="group glass-card hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                   <div className="flex gap-6">
                     <div className="relative w-32 h-24 flex-shrink-0">
                       <img 
@@ -216,8 +239,8 @@ export default function LivePage() {
                         alt={stream.title}
                         className="w-full h-full object-cover rounded-lg"
                       />
-                      <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Play className="w-8 h-8 text-white" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Play className="w-8 h-8 text-white drop-shadow-lg" />
                       </div>
                     </div>
                     
@@ -228,7 +251,10 @@ export default function LivePage() {
                       <div className="flex items-center gap-4 text-sm text-gray-600">
                         <span>{stream.date}</span>
                         <span>•</span>
-                        <span>{stream.viewCount.toLocaleString()} views</span>
+                        <span className="flex items-center gap-1">
+                          <Heart className="w-3 h-3 text-melody-pink" />
+                          {stream.viewCount.toLocaleString()} views
+                        </span>
                         <span>•</span>
                         <span>{stream.duration}</span>
                       </div>
@@ -247,14 +273,25 @@ export default function LivePage() {
           animate="visible"
         >
           <motion.div variants={fadeInUp}>
-            <Card className="relative overflow-hidden bg-gradient-to-r from-melody-purple/5 via-melody-pink/5 to-melody-sky/5">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-melody-purple/10 rounded-full blur-3xl" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-melody-pink/10 rounded-full blur-3xl" />
+            <Card className="relative overflow-hidden bg-gradient-to-r from-melody-sky/5 via-melody-pink/5 to-melody-purple/5">
+              {/* 背景装飾 */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-20 -right-20 w-40 h-40">
+                  <MusicNotes count={2} />
+                </div>
+                <div className="absolute -bottom-20 -left-20 w-40 h-40">
+                  <MusicNotes count={2} />
+                </div>
+              </div>
               
               <div className="relative z-10 text-center py-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-melody-purple/10 rounded-full mb-6">
+                <motion.div 
+                  className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full shadow-lg mb-6"
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                >
                   <Users className="w-8 h-8 text-melody-purple" />
-                </div>
+                </motion.div>
                 
                 <h3 className="text-3xl font-bold mb-4 text-gray-800">
                   配信の通知を受け取ろう
@@ -277,7 +314,7 @@ export default function LivePage() {
                   </a>
                   <Link 
                     href="/community/discord"
-                    className="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-4 rounded-full font-medium transition-all transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center gap-2"
+                    className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-8 py-4 rounded-full font-medium transition-all transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center gap-2"
                     aria-label="Discordに参加"
                   >
                     <Users className="w-5 h-5" />
