@@ -119,7 +119,7 @@
 ### 🔧 今後の実装予定
 
 #### コード改善（Claudeレビュー推奨事項）
-- [ ] SiteMode型の共通化（Navigation.tsx と ModeToggle.tsx で types/index.ts から import）
+- [x] SiteMode型の共通化（Navigation.tsx と ModeToggle.tsx で types/index.ts から import）
 
 #### 未実装のページ
 - [ ] /live - ライブ配信ページ

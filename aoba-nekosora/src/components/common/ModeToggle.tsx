@@ -3,8 +3,7 @@
 import { motion } from 'framer-motion'
 import { Music2, Briefcase } from 'lucide-react'
 import { cn } from '@/utils/cn'
-
-type SiteMode = 'entertainment' | 'business'
+import { SiteMode } from '@/types'
 
 interface ModeToggleProps {
   mode: SiteMode

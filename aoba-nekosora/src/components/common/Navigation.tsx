@@ -7,8 +7,7 @@ import { Music, Mic, Calendar, Users, Briefcase, Menu, X } from 'lucide-react'
 import { cn } from '@/utils/cn'
 import ModeToggle from './ModeToggle'
 import { fadeIn, fadeInUp } from '@/utils/animations'
-
-type SiteMode = 'entertainment' | 'business'
+import { SiteMode } from '@/types'
 
 const navItems = {
   entertainment: [
