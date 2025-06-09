@@ -44,15 +44,24 @@
 ### 🔧 今後の実装予定
 
 #### コード改善（Claudeレビュー推奨事項）
-- [ ] アニメーションバリアントの共通化（utils/animations.ts作成）
-- [ ] 画像パスの定数管理（constants/images.ts作成）
-- [ ] メールバリデーションの強化（RFC 5322準拠）
-- [ ] Cardコンポーネントの他ページへの適用拡大
+- [x] アニメーションバリアントの共通化（utils/animations.ts作成）
+- [x] 画像パスの定数管理（constants/images.ts作成）
+- [x] メールバリデーションの強化（RFC 5322準拠）
+- [x] Cardコンポーネントの他ページへの適用拡大（主要ページに適用済み）
+- [x] 未使用のインポート削除（Card コンポーネント）
+- [ ] Studio詳細ページの画像パス修正（実際の画像ファイル配置またはプレースホルダー対応）
+- [ ] アクセシビリティ向上（SkipToContent コンポーネント追加）
+- [ ] コードの可読性向上（データを別ファイルに分離：src/constants/studio.ts）
+- [ ] フォーム送信処理の本格実装（セキュリティ対策含む）
+- [ ] 既存Cardコンポーネントの活用（ServicesPage・WorksPageでの適用）
+- [ ] フォームデータのサニタイゼーション追加（DOMPurify使用）
+- [ ] ファイル末尾の不要な空白削除
+- [ ] API送信処理の実装（CSRF対策含む）
 
-#### 未実装の詳細ページ
-- [ ] /studio/works - 制作実績詳細ページ
-- [ ] /studio/services - サービス紹介詳細ページ  
-- [ ] /studio/contact - お問い合わせフォームページ
+#### 未実装の詳細ページ（完了）
+- [x] /studio/works - 制作実績詳細ページ
+- [x] /studio/services - サービス紹介詳細ページ  
+- [x] /studio/contact - お問い合わせフォームページ
 
 #### 機能実装
 - [ ] GitHub Release API連携
