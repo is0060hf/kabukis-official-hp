@@ -1,5 +1,3 @@
-import Navigation from '@/components/common/Navigation'
-import Footer from '@/components/common/Footer'
 import HeroSection from '@/components/home/HeroSection'
 import FeaturedMusic from '@/components/home/FeaturedMusic'
 import LiveSchedule from '@/components/home/LiveSchedule'
@@ -9,15 +7,11 @@ import CallToAction from '@/components/home/CallToAction'
 export default function HomePage() {
   return (
     <>
-      <Navigation />
-      <main className="pt-16">
-        <HeroSection />
-        <FeaturedMusic />
-        <LiveSchedule />
-        <LatestContent />
-        <CallToAction />
-      </main>
-      <Footer />
+      <HeroSection />
+      <FeaturedMusic />
+      <LiveSchedule />
+      <LatestContent />
+      <CallToAction />
     </>
   )
 } 

@@ -57,6 +57,12 @@
 - [ ] フォームデータのサニタイゼーション追加（DOMPurify使用）
 - [ ] ファイル末尾の不要な空白削除
 - [ ] API送信処理の実装（CSRF対策含む）
+- [ ] 時間計算のエラーハンドリング追加（/live/archive/page.tsx:238-239）
+- [ ] インラインデータのmockData.tsへの移動（recentStreams、過去のコラボハイライト）
+- [ ] 各ページの基本的なレンダリングテスト追加
+- [ ] フォーム機能のユニットテスト追加（/studio/contact、/community/requests）
+- [ ] 検索・フィルター機能のテスト追加
+- [ ] mockStems等の型定義をtypes/index.tsに追加
 
 #### 未実装の詳細ページ（完了）
 - [x] /studio/works - 制作実績詳細ページ
