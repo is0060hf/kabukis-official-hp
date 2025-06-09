@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import Navigation from '@/components/common/Navigation'
+import Footer from '@/components/common/Footer'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -31,8 +33,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body suppressHydrationWarning>
-        {children}
+      <body suppressHydrationWarning className="min-h-screen bg-gradient-to-br from-melody-sky/5 via-white to-melody-purple/5">
+        <Navigation />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   )

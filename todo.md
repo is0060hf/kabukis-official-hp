@@ -121,23 +121,23 @@
 #### コード改善（Claudeレビュー推奨事項）
 - [x] SiteMode型の共通化（Navigation.tsx と ModeToggle.tsx で types/index.ts から import）
 
-#### 未実装のページ
-- [ ] /live - ライブ配信ページ
-  - [ ] /live/schedule - 配信スケジュール詳細
-  - [ ] /live/archive - 過去配信アーカイブ
-  - [ ] /live/collab - コラボ配信
-- [ ] /content - コンテンツページ
-  - [ ] /content/music - 楽曲一覧・詳細
-  - [ ] /content/covers - 歌ってみた
-  - [ ] /content/blog - ブログ一覧・詳細
-- [ ] /community - コミュニティページ
-  - [ ] /community/discord - Discord案内
-  - [ ] /community/requests - 歌ってみたリクエスト
-- [ ] /studio - ビジネス向けページ
-  - [ ] /studio/works - 音楽制作実績
-  - [ ] /studio/services - 楽曲制作・ライセンス提供
-  - [ ] /studio/licensing - 音楽ライセンス・STEM販売
-  - [ ] /studio/contact - 事業お問い合わせ
+#### 未実装のページ（✅ 完了）
+- [x] /live - ライブ配信ページ
+  - [x] /live/schedule - 配信スケジュール詳細
+  - [x] /live/archive - 過去配信アーカイブ
+  - [x] /live/collab - コラボ配信
+- [x] /content - コンテンツページ
+  - [x] /content/music - 楽曲一覧・詳細
+  - [x] /content/covers - 歌ってみた
+  - [x] /content/blog - ブログ一覧・詳細
+- [x] /community - コミュニティページ
+  - [x] /community/discord - Discord案内
+  - [x] /community/requests - 歌ってみたリクエスト
+- [x] /studio - ビジネス向けページ
+  - [x] /studio/works - 音楽制作実績
+  - [x] /studio/services - 楽曲制作・ライセンス提供
+  - [x] /studio/licensing - 音楽ライセンス・STEM販売
+  - [x] /studio/contact - 事業お問い合わせ
 
 #### 機能実装
 - [ ] Hero動画の実装（hero.mp4）
