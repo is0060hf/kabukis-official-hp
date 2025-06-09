@@ -6,31 +6,11 @@ import Link from "next/link";
 import Image from "next/image";
 import type { CurrentLive, LiveCategory } from "@/types/live";
 import { Card } from "@/components/common/Card";
+import { commonAnimations } from "@/utils/animations";
+import { IMAGE_PATHS } from "@/constants/images";
 
-// アニメーション用のバリアント
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      delayChildren: 0.3,
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      damping: 12,
-      stiffness: 100,
-    },
-  },
-};
+// 共通アニメーションバリアントを使用
+const { containerVariants, itemVariants } = commonAnimations;
 
 const LivePage = () => {
   // モックデータ
@@ -38,7 +18,7 @@ const LivePage = () => {
     title: "【AI解説】ChatGPT APIの活用術！便利ツール開発ライブ",
     viewers: 1234,
     startTime: "20:00",
-    thumbnail: "/images/live-thumbnail.jpg",
+    thumbnail: IMAGE_PATHS.LIVE.THUMBNAIL,
     description: "ChatGPT APIを使った実用的なツール開発を実況解説！初心者でもわかりやすく、実際にコードを書きながら進めていきます。",
   } satisfies CurrentLive;
 
@@ -126,7 +106,7 @@ const LivePage = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="relative rounded-xl overflow-hidden aspect-video">
                   <Image
-                    src="/images/live-thumbnail.jpg"
+                    src={IMAGE_PATHS.LIVE.THUMBNAIL}
                     alt="配信サムネイル"
                     fill
                     className="object-cover"

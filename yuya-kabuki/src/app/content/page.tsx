@@ -4,31 +4,11 @@ import { motion } from "framer-motion";
 import { Code2, FileText, GraduationCap, Download, Star, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { commonAnimations } from "@/utils/animations";
+import { IMAGE_PATHS } from "@/constants/images";
 
-// アニメーション用のバリアント
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      delayChildren: 0.3,
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      damping: 12,
-      stiffness: 100,
-    },
-  },
-};
+// 共通アニメーションバリアントを使用
+const { containerVariants, itemVariants } = commonAnimations;
 
 const ContentPage = () => {
   // コンテンツカテゴリー
@@ -81,21 +61,21 @@ const ContentPage = () => {
       type: "tool",
       downloads: 15420,
       rating: 4.8,
-      image: "/images/tool-1.jpg",
+      image: IMAGE_PATHS.TOOLS.TOOL_1,
     },
     {
       title: "ChatGPT API活用完全ガイド",
       type: "article",
       views: 28900,
       rating: 4.9,
-      image: "/images/article-1.jpg",
+      image: IMAGE_PATHS.CONTENT.ARTICLE_1,
     },
     {
       title: "React + TypeScript実践講座",
       type: "tutorial",
       students: 5200,
       rating: 4.7,
-      image: "/images/tutorial-1.jpg",
+      image: IMAGE_PATHS.TUTORIALS.TUTORIAL_1,
     },
   ];
 

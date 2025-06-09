@@ -29,9 +29,36 @@ export const validateField = (
   }
 
   if (rules.email && value) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // RFC 5322準拠のメールアドレス検証（簡略版）
+    // より厳密な検証のためのパターン
+    const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    
     if (!emailPattern.test(value)) {
       return "有効なメールアドレスを入力してください";
+    }
+    
+    // 追加のメールアドレス検証
+    if (value.length > 254) {
+      return "メールアドレスが長すぎます（254文字以内）";
+    }
+    
+    const [localPart, domainPart] = value.split('@');
+    if (localPart.length > 64) {
+      return "メールアドレスのローカル部が長すぎます（64文字以内）";
+    }
+    
+    if (domainPart.length > 253) {
+      return "メールアドレスのドメイン部が長すぎます（253文字以内）";
+    }
+    
+    // 連続するドットのチェック
+    if (localPart.includes('..') || domainPart.includes('..')) {
+      return "メールアドレスに連続するドットは使用できません";
+    }
+    
+    // 開始・終了がドットでないかチェック
+    if (localPart.startsWith('.') || localPart.endsWith('.')) {
+      return "メールアドレスのローカル部はドットで開始・終了できません";
     }
   }
 

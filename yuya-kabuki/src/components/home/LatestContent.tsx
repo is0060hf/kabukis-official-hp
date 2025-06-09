@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Calendar, Clock, ArrowRight, BookOpen, Brain, Cpu } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { IMAGE_PATHS } from "@/constants/images";
 
 // モックデータ
 const mockArticles = [
@@ -14,7 +15,7 @@ const mockArticles = [
     category: "AI開発",
     readTime: "15分",
     publishedAt: "2024-01-15",
-    thumbnail: "/images/articles/gpt4-vision.jpg",
+    thumbnail: IMAGE_PATHS.ARTICLES.GPT4_VISION_HOME,
     icon: <Brain className="w-5 h-5" />,
   },
   {
@@ -24,7 +25,7 @@ const mockArticles = [
     category: "Web開発",
     readTime: "20分",
     publishedAt: "2024-01-12",
-    thumbnail: "/images/articles/nextjs-server-actions.jpg",
+    thumbnail: IMAGE_PATHS.ARTICLES.NEXTJS_SERVER_ACTIONS,
     icon: <Cpu className="w-5 h-5" />,
   },
   {
@@ -34,7 +35,7 @@ const mockArticles = [
     category: "AI開発",
     readTime: "25分",
     publishedAt: "2024-01-10",
-    thumbnail: "/images/articles/langchain-agent.jpg",
+    thumbnail: IMAGE_PATHS.ARTICLES.LANGCHAIN_AGENT,
     icon: <BookOpen className="w-5 h-5" />,
   },
 ];

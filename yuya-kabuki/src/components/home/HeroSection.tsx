@@ -5,6 +5,8 @@ import { ChevronDown, Code2, GitBranch, Terminal } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { commonAnimations, createStaggeredContainer } from "@/utils/animations";
+import { IMAGE_PATHS } from "@/constants/images";
 
 const HeroSection = () => {
   const [windowSize, setWindowSize] = useState({ width: 1000, height: 800 });
@@ -22,30 +24,9 @@ const HeroSection = () => {
     }
   }, []);
 
-  // アニメーション用のバリアント
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        damping: 12,
-        stiffness: 100,
-      },
-    },
-  };
+  // カスタムコンテナーバリアント（より遅い間隔）
+  const containerVariants = createStaggeredContainer(0.3, 0.2);
+  const { itemVariants } = commonAnimations;
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -206,7 +187,7 @@ const HeroSection = () => {
                     <div className="absolute inset-0 rounded-full bg-gradient-radial from-transparent via-transparent to-vampire-night/80 z-10 pointer-events-none"></div>
                     
                     <Image
-                      src="/images/yuya-hero.jpg"
+                      src={IMAGE_PATHS.CHARACTER.YUYA_HERO}
                       alt="傾奇ユウヤ - クール系ショタ吸血鬼VTuber。ダークな装いに紫のアクセント、鋭い牙と赤い瞳が特徴"
                       width={600}
                       height={600}
