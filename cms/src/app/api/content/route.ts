@@ -34,11 +34,29 @@ export async function GET(request: NextRequest) {
     const characterOwner = searchParams.get('characterOwner') as CharacterOwner | null
     const contentType = searchParams.get('contentType') as ContentType | null
     const status = searchParams.get('status') as ContentStatus | null
+    const search = searchParams.get('search')
+    const dateFrom = searchParams.get('dateFrom')
+    const dateTo = searchParams.get('dateTo')
 
     const where = {
       ...(characterOwner && { characterOwner }),
       ...(contentType && { contentType }),
       ...(status && { status }),
+      ...(search && {
+        OR: [
+          { title: { contains: search, mode: 'insensitive' as const } },
+          { content: { contains: search, mode: 'insensitive' as const } },
+          { excerpt: { contains: search, mode: 'insensitive' as const } },
+        ],
+      }),
+      ...(dateFrom || dateTo ? {
+        createdAt: {
+          ...(dateFrom && { gte: new Date(dateFrom) }),
+          ...(dateTo && { 
+            lte: new Date(dateTo + 'T23:59:59.999Z') // 終了日の終わりまで含める
+          }),
+        },
+      } : {}),
     }
 
     const [contents, total] = await Promise.all([

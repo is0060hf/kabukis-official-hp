@@ -11,6 +11,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { FeedbackType, FeedbackStatus, CharacterOwner } from '@/types/database'
+import Pagination, { PageInfo } from '@/components/common/Pagination'
 
 interface Feedback {
   id: string
@@ -261,24 +262,17 @@ export default function FeedbacksPage() {
 
       {/* ページネーション */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2">
-          <button
-            onClick={() => setPage(Math.max(1, page - 1))}
-            disabled={page === 1}
-            className="px-4 py-2 bg-cms-card text-cms-text rounded hover:bg-cms-hover disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            前へ
-          </button>
-          <span className="px-4 py-2 text-cms-text">
-            {page} / {totalPages}
-          </span>
-          <button
-            onClick={() => setPage(Math.min(totalPages, page + 1))}
-            disabled={page === totalPages}
-            className="px-4 py-2 bg-cms-card text-cms-text rounded hover:bg-cms-hover disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            次へ
-          </button>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <PageInfo 
+            currentPage={page}
+            limit={20}
+            total={feedbacks.length ? feedbacks.length * totalPages : 0} // 概算値
+          />
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </div>
       )}
     </div>

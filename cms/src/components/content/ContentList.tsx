@@ -7,6 +7,7 @@ import { Edit, Trash2, Eye, Calendar, Tag } from 'lucide-react'
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { announceToScreenReader } from '@/components/common/LiveRegion'
+import Pagination, { PageInfo } from '@/components/common/Pagination'
 
 interface Content {
   id: string
@@ -34,6 +35,8 @@ export default function ContentList() {
   })
 
   useEffect(() => {
+    const page = parseInt(searchParams.get('page') || '1')
+    setPagination(prev => ({ ...prev, page }))
     fetchContents()
   }, [searchParams])
 
@@ -173,12 +176,16 @@ export default function ContentList() {
       )}
 
       {pagination.totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-center gap-2">
-          {/* TODO: ページネーション実装 */}
-          <span className="text-sm text-cms-text-muted">
-            {pagination.total}件中 {(pagination.page - 1) * pagination.limit + 1}-
-            {Math.min(pagination.page * pagination.limit, pagination.total)}件を表示
-          </span>
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <PageInfo 
+            currentPage={pagination.page}
+            limit={pagination.limit}
+            total={pagination.total}
+          />
+          <Pagination
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
+          />
         </div>
       )}
     </div>
