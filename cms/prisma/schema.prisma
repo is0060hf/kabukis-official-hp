@@ -29,6 +29,10 @@ model User {
   assignedInquiries Inquiry[]  @relation("AssignedInquiries")
   inquiries        Inquiry[]   @relation("UserInquiries")
   contentAnalytics ContentAnalytics[]
+  feedbacks        Feedback[]
+  requests         Request[]
+  assignedFeedbacks Feedback[] @relation("AssignedFeedbacks")
+  assignedRequests  Request[]  @relation("AssignedRequests")
   
   @@map("users")
 }
@@ -113,6 +117,8 @@ model Lead {
 
   assignedTo User?     @relation("AssignedLeads", fields: [assignedToId], references: [id])
   inquiries  Inquiry[]
+  feedbacks  Feedback[]
+  requests   Request[]
   
   @@map("leads")
 }
@@ -140,6 +146,84 @@ model Inquiry {
   assignedTo User?  @relation("AssignedInquiries", fields: [assignedToId], references: [id])
   
   @@map("inquiries")
+}
+
+// ========== フィードバック管理 ==========
+model Feedback {
+  id              String         @id @default(cuid())
+  leadId          String?
+  userId          String?
+  characterOwner  CharacterOwner
+  feedbackType    FeedbackType
+  subject         String
+  message         String
+  rating          Int?           // 1-5の評価
+  status          FeedbackStatus @default(NEW)
+  assignedToId    String?
+  response        String?
+  respondedAt     DateTime?
+  tags            Json?          // タグ配列
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  lead       Lead?  @relation(fields: [leadId], references: [id])
+  user       User?  @relation(fields: [userId], references: [id])
+  assignedTo User?  @relation("AssignedFeedbacks", fields: [assignedToId], references: [id])
+  
+  @@map("feedbacks")
+}
+
+// ========== リクエスト管理 ==========
+model Request {
+  id              String         @id @default(cuid())
+  leadId          String?
+  userId          String?
+  characterOwner  CharacterOwner
+  requestType     RequestType
+  title           String
+  description     String
+  priority        Priority       @default(MEDIUM)
+  status          RequestStatus  @default(PENDING)
+  assignedToId    String?
+  implementedAt   DateTime?
+  metadata        Json?          // 追加データ
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  lead       Lead?  @relation(fields: [leadId], references: [id])
+  user       User?  @relation(fields: [userId], references: [id])
+  assignedTo User?  @relation("AssignedRequests", fields: [assignedToId], references: [id])
+  
+  @@map("requests")
+}
+
+// ========== 分析・統計管理 ==========
+model KpiMetric {
+  id            String         @id @default(cuid())
+  metricName    String
+  characterScope CharacterOwner
+  metricValue   Decimal
+  metricDate    DateTime
+  periodType    PeriodType
+  metadata      Json?
+  createdAt     DateTime       @default(now())
+  
+  @@unique([metricName, characterScope, metricDate, periodType])
+  @@map("kpi_metrics")
+}
+
+model RevenueAnalytics {
+  id                  String         @id @default(cuid())
+  date                DateTime
+  characterAttribution CharacterOwner
+  revenueSource       RevenueSource
+  amount              Decimal
+  currency            String         @default("JPY")
+  customerCount       Int?
+  newCustomerCount    Int?
+  createdAt           DateTime       @default(now())
+  
+  @@map("revenue_analytics")
 }
 
 // ========== コンテンツ管理 ==========
@@ -330,4 +414,53 @@ enum StreamStatus {
   LIVE
   COMPLETED
   CANCELLED
+}
+
+enum FeedbackType {
+  BUG_REPORT
+  FEATURE_REQUEST
+  IMPROVEMENT
+  COMPLAINT
+  PRAISE
+  OTHER
+}
+
+enum FeedbackStatus {
+  NEW
+  REVIEWING
+  RESPONDED
+  CLOSED
+}
+
+enum RequestType {
+  NEW_FEATURE
+  CONTENT_REQUEST
+  TOOL_REQUEST
+  COLLABORATION
+  OTHER
+}
+
+enum RequestStatus {
+  PENDING
+  REVIEWING
+  APPROVED
+  IN_PROGRESS
+  COMPLETED
+  REJECTED
+}
+
+enum PeriodType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum RevenueSource {
+  B2B_PROJECT
+  DIGITAL_PRODUCTS
+  SUBSCRIPTIONS
+  LICENSING
+  OTHER
 } 

@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { InquiryType, InquiryStatus, Priority } from '@/types/database'
+import { notifyNewInquiry } from '@/lib/notifications'
 
 // 問い合わせ作成のスキーマ
 const createInquirySchema = z.object({
@@ -136,7 +137,8 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // TODO: 通知を送信（管理者にメール、Discord等）
+    // 通知を送信（管理者にメール、Discord等）
+    await notifyNewInquiry(inquiry)
 
     return NextResponse.json(inquiry, { status: 201 })
   } catch (error) {

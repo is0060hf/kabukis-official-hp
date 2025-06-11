@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { LeadSource, LeadType, LeadStatus } from '@/types/database'
+import { notifyNewLead } from '@/lib/notifications'
 
 // リード作成のスキーマ
 const createLeadSchema = z.object({
@@ -99,7 +100,8 @@ export async function POST(request: NextRequest) {
       data: leadData,
     })
 
-    // TODO: 通知を送信（メール、Discord webhook等）
+    // 通知を送信（メール、Discord webhook等）
+    await notifyNewLead(lead)
 
     return NextResponse.json(lead, { status: 201 })
   } catch (error) {
