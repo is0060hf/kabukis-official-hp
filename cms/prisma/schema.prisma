@@ -31,6 +31,7 @@ model User {
   orders            Order[]
   auditLogs         AuditLog[]
   crossSiteActivities CrossSiteActivity[]
+  notifications     Notification[]
 
   @@map("users")
 }
@@ -651,6 +652,26 @@ model CrossSiteActivity {
   @@map("cross_site_activities")
 }
 
+// ========== 通知管理 ==========
+model Notification {
+  id               String           @id @default(cuid())
+  userId           String
+  type             NotificationType
+  title            String
+  message          String
+  link             String?
+  isRead           Boolean          @default(false)
+  readAt           DateTime?
+  metadata         Json?
+  createdAt        DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
 // ========== 新しいEnums ==========
 enum CompanySize {
   STARTUP
@@ -738,4 +759,17 @@ enum OrderStatus {
 enum LogStatus {
   SUCCESS
   FAILURE
+}
+
+enum NotificationType {
+  SYSTEM_UPDATE
+  NEW_CONTENT
+  NEW_REQUEST
+  NEW_FEEDBACK
+  REQUEST_STATUS_CHANGE
+  FEEDBACK_RESPONSE
+  PROJECT_UPDATE
+  LEAD_ASSIGNED
+  REVENUE_ALERT
+  ERROR_ALERT
 }

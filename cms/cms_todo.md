@@ -79,14 +79,16 @@
   - クイックフィルター機能追加済み
 
 ### 5. 通知・リアルタイム機能
-- [ ] **リアルタイム通知**
-  - WebSocket/Server-Sent Events未実装
-  - 新着通知のバッジ表示機能なし
-  - プッシュ通知対応なし
+- [x] **リアルタイム通知**
+  - Server-Sent Events (SSE) 実装済み（`/api/notifications/stream`）
+  - 新着通知のバッジ表示機能実装済み
+  - プッシュ通知対応は未実装（将来対応）
 
-- [ ] **通知センター**
-  - 通知一覧画面未実装
-  - 既読管理機能なし
+- [x] **通知センター**
+  - 通知一覧画面実装済み（`/notifications`）
+  - 既読管理機能実装済み
+  - 一括既読機能実装済み
+  - 通知削除機能実装済み
 
 ## 📊 分析・レポート機能
 
@@ -239,3 +241,41 @@
 - 型エラーが表示される場合は`npx prisma generate`を実行
 - 新しいマイグレーション作成時は`npx prisma migrate dev`を使用
 - ビルド確認は`npm run build`で実施
+
+### 実装済み通知機能
+- **通知データモデル** - `Notification`テーブル実装済み
+  - ユーザーごとの通知管理
+  - 既読/未読管理
+  - メタデータ保存
+
+- **通知API** - 以下のエンドポイント実装済み
+  - GET `/api/notifications` - 通知一覧取得
+  - POST `/api/notifications` - 通知作成（管理者のみ）
+  - PATCH `/api/notifications/[id]` - 既読更新
+  - DELETE `/api/notifications/[id]` - 通知削除
+  - PATCH `/api/notifications/read-all` - 一括既読
+  - GET `/api/notifications/stream` - SSEリアルタイム配信
+
+- **通知UI**
+  - `NotificationBadge` - 未読数表示コンポーネント
+  - 通知センターページ（`/notifications`）
+  - ヘッダーの通知アイコン統合
+
+- **通知ヘルパー関数** - `/lib/db-notifications.ts`
+  - `createNotification` - 通知作成
+  - `notifyAdmins` - 管理者への通知
+  - `createNewRequestNotification` - 新規リクエスト通知
+  - `createNewFeedbackNotification` - 新規フィードバック通知
+  - `notifyRequestStatusChange` - ステータス変更通知
+  - `notifyFeedbackResponse` - フィードバック返信通知
+
+### 通知連携の実装方法
+新しいエンティティが作成された際に通知を発生させるには、以下の例を参考にしてください：
+
+```typescript
+import { createNewRequestNotification } from '@/lib/db-notifications'
+
+// リクエスト作成時
+const request = await prisma.request.create({ ... })
+await createNewRequestNotification(request.id, request.title)
+```

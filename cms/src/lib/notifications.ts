@@ -1,6 +1,11 @@
-import { Lead, Inquiry, Feedback, Request } from '@prisma/client'
 import nodemailer from 'nodemailer'
 import { CharacterOwner } from '@/types/database'
+
+// 型定義
+type Lead = any
+type Inquiry = any & { lead?: Lead | null }
+type Feedback = any & { user?: { email: string } | null }
+type Request = any & { user?: { email: string } | null }
 
 // メール送信の設定
 const transporter = process.env.EMAIL_SERVER 
@@ -315,4 +320,6 @@ export async function notifyStatusUpdate(
       { name: '👤 更新者', value: updatedBy || 'システム', inline: true },
     ],
   })
-} 
+}
+
+ 
