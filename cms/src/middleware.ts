@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { auth } from './lib/auth'
-// import { corsMiddleware, setCorsHeaders } from './lib/cors'
-// import { auditMiddleware } from './lib/audit'
+import { corsMiddleware, setCorsHeaders } from './lib/cors'
+import { auditMiddleware } from './lib/audit'
 
 export async function middleware(request: NextRequest) {
   // CORSプリフライトリクエストの処理
-  // const corsResponse = corsMiddleware(request)
-  // if (corsResponse) {
-  //   return corsResponse
-  // }
+  const corsResponse = corsMiddleware(request)
+  if (corsResponse) {
+    return corsResponse
+  }
 
   // パスの取得
   const path = request.nextUrl.pathname
@@ -31,12 +31,12 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
   
   // CORSヘッダーを設定
-  // setCorsHeaders(request, response)
+  setCorsHeaders(request, response)
   
   // 監査ログの記録（非同期で実行）
-  // if (path.startsWith('/api/')) {
-  //   auditMiddleware(request, response).catch(console.error)
-  // }
+  if (path.startsWith('/api/')) {
+    auditMiddleware(request, response).catch(console.error)
+  }
   
   return response
 }

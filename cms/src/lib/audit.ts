@@ -20,19 +20,17 @@ interface AuditLogEntry {
   status: LogStatus
 }
 
-// 監査ログを記録する関数（一時的にコメントアウト）
+// 監査ログを記録する関数
 export async function logAuditEntry(entry: AuditLogEntry) {
   try {
-    // const { prisma } = await import('@/lib/prisma')
+    const { prisma } = await import('@/lib/prisma')
     
-    // await prisma.auditLog.create({
-    //   data: {
-    //     ...entry,
-    //     createdAt: new Date(),
-    //   },
-    // })
-    
-    console.log('Audit log entry (temporarily disabled):', entry)
+    await prisma.auditLog.create({
+      data: {
+        ...entry,
+        createdAt: new Date(),
+      },
+    })
   } catch (error) {
     console.error('Error creating audit log:', error)
   }
@@ -110,26 +108,23 @@ export async function auditAction(
   }
 }
 
-// 監査ログのクリーンアップ（古いログの削除）（一時的にコメントアウト）
+// 監査ログのクリーンアップ（古いログの削除）
 export async function cleanupAuditLogs(daysToKeep: number = 90) {
   try {
-    // const { prisma } = await import('@/lib/prisma')
-    // const cutoffDate = new Date()
-    // cutoffDate.setDate(cutoffDate.getDate() - daysToKeep)
+    const { prisma } = await import('@/lib/prisma')
+    const cutoffDate = new Date()
+    cutoffDate.setDate(cutoffDate.getDate() - daysToKeep)
     
-    // const result = await prisma.auditLog.deleteMany({
-    //   where: {
-    //     createdAt: {
-    //       lt: cutoffDate,
-    //     },
-    //   },
-    // })
+    const result = await prisma.auditLog.deleteMany({
+      where: {
+        createdAt: {
+          lt: cutoffDate,
+        },
+      },
+    })
     
-    // console.log(`Cleaned up ${result.count} audit logs older than ${daysToKeep} days`)
-    // return result
-    
-    console.log(`Audit log cleanup temporarily disabled (would clean logs older than ${daysToKeep} days)`)
-    return { count: 0 }
+    console.log(`Cleaned up ${result.count} audit logs older than ${daysToKeep} days`)
+    return result
   } catch (error) {
     console.error('Error cleaning up audit logs:', error)
     throw error

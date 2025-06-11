@@ -26,6 +26,11 @@ model User {
   requests          Request[]
   sessions          Session[]
   profile           UserProfile?
+  managedProjects   Project[]
+  projectActivities ProjectActivity[]
+  orders            Order[]
+  auditLogs         AuditLog[]
+  crossSiteActivities CrossSiteActivity[]
 
   @@map("users")
 }
@@ -107,6 +112,8 @@ model Lead {
   inquiries         Inquiry[]
   assignedTo        User?      @relation("AssignedLeads", fields: [assignedToId], references: [id])
   requests          Request[]
+  companyContacts   CompanyContact[]
+  projects          Project[]
 
   @@map("leads")
 }
@@ -450,4 +457,285 @@ enum RevenueSource {
   SUBSCRIPTIONS
   LICENSING
   OTHER
+}
+
+// ========== 企業管理 ==========
+model Company {
+  id                 String           @id @default(cuid())
+  name               String
+  domain             String?
+  industry           String?
+  sizeCategory       CompanySize?
+  annualRevenueRange String?
+  country            String?
+  websiteUrl         String?
+  description        String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  contacts CompanyContact[]
+  projects Project[]
+  
+  @@map("companies")
+}
+
+model CompanyContact {
+  id         String       @id @default(cuid())
+  companyId  String
+  leadId     String
+  role       ContactRole
+  createdAt  DateTime     @default(now())
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  lead    Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  
+  @@unique([companyId, leadId])
+  @@map("company_contacts")
+}
+
+// ========== プロジェクト管理 ==========
+model Project {
+  id                 String         @id @default(cuid())
+  name               String
+  description        String?
+  companyId          String?
+  leadId             String?
+  projectType        ProjectType
+  status             ProjectStatus  @default(PLANNING)
+  startDate          DateTime?
+  endDate            DateTime?
+  budget             Decimal?
+  actualCost         Decimal?
+  profitMargin       Decimal?
+  assignedCharacter  CharacterOwner
+  projectManagerId   String?
+  clientSatisfaction Int?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  company        Company?             @relation(fields: [companyId], references: [id])
+  lead           Lead?                @relation(fields: [leadId], references: [id])
+  projectManager User?                @relation(fields: [projectManagerId], references: [id])
+  deliverables   ProjectDeliverable[]
+  activities     ProjectActivity[]
+  
+  @@map("projects")
+}
+
+model ProjectDeliverable {
+  id           String             @id @default(cuid())
+  projectId    String
+  name         String
+  description  String?
+  fileUrl      String?
+  deliveryDate DateTime?
+  status       DeliverableStatus  @default(PLANNED)
+  createdAt    DateTime           @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@map("project_deliverables")
+}
+
+model ProjectActivity {
+  id           String       @id @default(cuid())
+  projectId    String
+  userId       String?
+  activityType ActivityType
+  description  String
+  metadata     Json?
+  createdAt    DateTime     @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id])
+  
+  @@map("project_activities")
+}
+
+// ========== EC・販売管理 ==========
+model Product {
+  id                String         @id @default(cuid())
+  name              String
+  description       String?
+  characterOwner    CharacterOwner
+  productType       ProductType
+  price             Decimal
+  currency          String         @default("JPY")
+  isRecurring       Boolean        @default(false)
+  recurringInterval RecurringInterval?
+  fileUrl           String?
+  licenseType       LicenseType?
+  status            ProductStatus  @default(ACTIVE)
+  inventoryCount    Int?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  orderItems OrderItem[]
+  
+  @@map("products")
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String?
+  orderNumber     String      @unique
+  totalAmount     Decimal
+  currency        String      @default("JPY")
+  status          OrderStatus @default(PENDING)
+  paymentMethod   String?
+  paymentIntentId String?
+  billingAddress  Json?
+  shippingAddress Json?
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user       User?       @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
+  
+  @@map("orders")
+}
+
+model OrderItem {
+  id            String   @id @default(cuid())
+  orderId       String
+  productId     String?
+  quantity      Int      @default(1)
+  unitPrice     Decimal
+  totalPrice    Decimal
+  licenseKey    String?
+  downloadCount Int      @default(0)
+  downloadLimit Int?
+  createdAt     DateTime @default(now())
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id])
+  
+  @@map("order_items")
+}
+
+// ========== 監査ログ ==========
+model AuditLog {
+  id         String      @id @default(cuid())
+  userId     String?
+  action     String
+  resource   String
+  resourceId String?
+  changes    Json?
+  ipAddress  String?
+  userAgent  String?
+  status     LogStatus
+  createdAt  DateTime    @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+  
+  @@index([userId])
+  @@index([resource])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ========== クロスドメイン連携 ==========
+model CrossSiteActivity {
+  id         String   @id @default(cuid())
+  userId     String?
+  fromDomain String
+  toDomain   String
+  sessionId  String
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+  
+  @@index([userId])
+  @@index([sessionId])
+  @@map("cross_site_activities")
+}
+
+// ========== 新しいEnums ==========
+enum CompanySize {
+  STARTUP
+  SMALL
+  MEDIUM
+  LARGE
+  ENTERPRISE
+}
+
+enum ContactRole {
+  PRIMARY
+  SECONDARY
+  DECISION_MAKER
+  TECHNICAL
+  FINANCIAL
+}
+
+enum ProjectType {
+  AI_DEVELOPMENT
+  TOOL_CREATION
+  CONSULTATION
+  MUSIC_PRODUCTION
+  COLLABORATION
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum DeliverableStatus {
+  PLANNED
+  IN_PROGRESS
+  DELIVERED
+  APPROVED
+}
+
+enum ActivityType {
+  CREATED
+  UPDATED
+  COMMENT
+  FILE_UPLOAD
+  MILESTONE
+  MEETING
+}
+
+enum ProductType {
+  DIGITAL_TOOL
+  MUSIC_STEM
+  CONSULTATION
+  SUBSCRIPTION
+  MERCHANDISE
+}
+
+enum RecurringInterval {
+  MONTHLY
+  YEARLY
+}
+
+enum LicenseType {
+  PERSONAL
+  COMMERCIAL
+  EXTENDED
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  DISCONTINUED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum LogStatus {
+  SUCCESS
+  FAILURE
 }

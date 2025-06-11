@@ -49,7 +49,7 @@ export function corsMiddleware(request: NextRequest): NextResponse | null {
   return null
 }
 
-// クロスドメインユーザートラッキング（一時的にコメントアウト）
+// クロスドメインユーザートラッキング
 export async function trackCrossSiteNavigation(
   fromDomain: string,
   toDomain: string,
@@ -57,23 +57,16 @@ export async function trackCrossSiteNavigation(
   sessionId?: string
 ) {
   try {
-    // const { prisma } = await import('@/lib/prisma')
+    const { prisma } = await import('@/lib/prisma')
     
-    // await prisma.crossSiteActivity.create({
-    //   data: {
-    //     userId,
-    //     fromDomain,
-    //     toDomain,
-    //     sessionId: sessionId || generateSessionId(),
-    //     createdAt: new Date(),
-    //   },
-    // })
-    
-    console.log('Cross-site navigation tracked (temporarily disabled)', {
-      fromDomain,
-      toDomain,
-      userId,
-      sessionId
+    await prisma.crossSiteActivity.create({
+      data: {
+        userId,
+        fromDomain,
+        toDomain,
+        sessionId: sessionId || generateSessionId(),
+        createdAt: new Date(),
+      },
     })
   } catch (error) {
     console.error('Error tracking cross-site navigation:', error)
