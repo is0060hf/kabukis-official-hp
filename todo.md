@@ -87,6 +87,10 @@
 - [ ] 時間計算のエラーハンドリング追加（/live/archive/page.tsx:238-239）
 - [ ] Studio詳細ページの画像パス修正
 - [ ] mockStems等の型定義をtypes/index.tsに追加
+- [ ] CMS: @types/nodemailerをdevDependenciesに移動
+- [ ] CMS: 分析APIのパラメータ検証強化（SQLインジェクション対策）
+- [ ] CMS: 通知システムのエラーハンドリング改善
+- [ ] CMS: Discord Webhook URLのバリデーション追加
 
 ### 中優先度
 - [ ] アクセシビリティ向上（SkipToContent コンポーネント追加）
