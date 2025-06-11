@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { 
   LayoutDashboard, 
   Users, 
@@ -48,6 +48,7 @@ const navigation = [
 export default function Sidebar() {
   const pathname = usePathname()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const navRef = useRef<HTMLElement>(null)
 
   const toggleExpanded = (itemName: string) => {
     setExpandedItems(prev => 
@@ -56,6 +57,55 @@ export default function Sidebar() {
         : [...prev, itemName]
     )
   }
+
+  // キーボードナビゲーション
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!navRef.current) return
+      
+      const focusableElements = Array.from(
+        navRef.current.querySelectorAll('a, button')
+      ) as HTMLElement[]
+      
+      const currentIndex = focusableElements.findIndex(
+        el => el === document.activeElement
+      )
+      
+      if (currentIndex === -1) return
+      
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault()
+          const nextIndex = (currentIndex + 1) % focusableElements.length
+          focusableElements[nextIndex]?.focus()
+          break
+          
+        case 'ArrowUp':
+          e.preventDefault()
+          const prevIndex = currentIndex === 0 
+            ? focusableElements.length - 1 
+            : currentIndex - 1
+          focusableElements[prevIndex]?.focus()
+          break
+          
+        case 'Home':
+          e.preventDefault()
+          focusableElements[0]?.focus()
+          break
+          
+        case 'End':
+          e.preventDefault()
+          focusableElements[focusableElements.length - 1]?.focus()
+          break
+      }
+    }
+    
+    const nav = navRef.current
+    if (nav) {
+      nav.addEventListener('keydown', handleKeyDown)
+      return () => nav.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [expandedItems]) // expandedItemsが変わるとフォーカス可能な要素も変わるため
 
   const renderNavItem = (item: any) => {
     const isActive = pathname === item.href || (item.subItems && item.subItems.some((sub: any) => pathname === sub.href))
@@ -75,15 +125,24 @@ export default function Sidebar() {
                 : 'text-cms-text-muted hover:bg-cms-surface-hover hover:text-cms-text'
               }
             `}
+            aria-expanded={isExpanded}
+            aria-controls={`submenu-${item.name}`}
           >
             <div className="flex items-center gap-3">
               <Icon className="w-5 h-5" aria-hidden="true" />
               <span>{item.name}</span>
             </div>
-            {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            {isExpanded ? 
+              <ChevronDown className="w-4 h-4" aria-hidden="true" /> : 
+              <ChevronRight className="w-4 h-4" aria-hidden="true" />
+            }
           </button>
           {isExpanded && (
-            <ul className="mt-1 ml-8 space-y-1">
+            <ul 
+              id={`submenu-${item.name}`}
+              className="mt-1 ml-8 space-y-1"
+              role="group"
+            >
               {item.subItems.map((subItem: any) => {
                 const SubIcon = subItem.icon
                 const isSubActive = pathname === subItem.href
@@ -99,8 +158,9 @@ export default function Sidebar() {
                           : 'text-cms-text-muted hover:bg-cms-surface-hover hover:text-cms-text'
                         }
                       `}
+                      aria-current={isSubActive ? 'page' : undefined}
                     >
-                      {SubIcon && <SubIcon className="w-4 h-4" />}
+                      {SubIcon && <SubIcon className="w-4 h-4" aria-hidden="true" />}
                       <span>{subItem.name}</span>
                     </Link>
                   </li>
@@ -134,7 +194,11 @@ export default function Sidebar() {
   }
 
   return (
-    <nav className="w-64 bg-cms-surface border-r border-cms-border" aria-label="メインナビゲーション">
+    <nav 
+      ref={navRef}
+      className="w-64 bg-cms-surface border-r border-cms-border" 
+      aria-label="メインナビゲーション"
+    >
       <div className="p-6">
         <h2 className="text-xl font-bold text-cms-text">Kabukis CMS</h2>
       </div>

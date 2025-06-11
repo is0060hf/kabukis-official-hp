@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Edit, Trash2, Eye, Calendar, Tag } from 'lucide-react'
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
+import { announceToScreenReader } from '@/components/common/LiveRegion'
 
 interface Content {
   id: string
@@ -63,10 +64,14 @@ export default function ContentList() {
       })
 
       if (response.ok) {
+        announceToScreenReader('コンテンツを削除しました', 'polite')
         fetchContents()
+      } else {
+        announceToScreenReader('コンテンツの削除に失敗しました', 'assertive')
       }
     } catch (error) {
       console.error('Error deleting content:', error)
+      announceToScreenReader('エラーが発生しました', 'assertive')
     }
   }
 

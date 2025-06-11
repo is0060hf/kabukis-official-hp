@@ -96,22 +96,51 @@
 
   .badge-success {
     background-color: oklch(75% 0.15 150 / 0.2);
+    border: 1px solid oklch(75% 0.15 150 / 0.5);
     @apply text-cms-success;
   }
 
   .badge-warning {
     background-color: oklch(80% 0.15 90 / 0.2);
+    border: 1px solid oklch(80% 0.15 90 / 0.5);
     @apply text-cms-warning;
   }
 
   .badge-error {
     background-color: oklch(65% 0.20 25 / 0.2);
+    border: 1px solid oklch(65% 0.20 25 / 0.5);
     @apply text-cms-error;
   }
 
   .badge-info {
     background-color: oklch(70% 0.15 230 / 0.2);
+    border: 1px solid oklch(70% 0.15 230 / 0.5);
     @apply text-cms-info;
+  }
+
+  /* ダークモードでのコントラスト強化 */
+  .dark .badge-success {
+    background-color: oklch(25% 0.15 150 / 0.3);
+    border-color: oklch(75% 0.15 150 / 0.7);
+    @apply text-green-300;
+  }
+
+  .dark .badge-warning {
+    background-color: oklch(30% 0.15 90 / 0.3);
+    border-color: oklch(80% 0.15 90 / 0.7);
+    @apply text-yellow-300;
+  }
+
+  .dark .badge-error {
+    background-color: oklch(25% 0.20 25 / 0.3);
+    border-color: oklch(65% 0.20 25 / 0.7);
+    @apply text-red-300;
+  }
+
+  .dark .badge-info {
+    background-color: oklch(25% 0.15 230 / 0.3);
+    border-color: oklch(70% 0.15 230 / 0.7);
+    @apply text-blue-300;
   }
 }
 
