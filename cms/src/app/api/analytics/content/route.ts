@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { ContentType, CharacterOwner, EventType } from '@/types/database'
 import { startOfMonth, endOfMonth, subMonths } from 'date-fns'
+import { validateContentType, validateCharacter, validateMonths } from '@/lib/validation'
 
 // GET: コンテンツ分析データ取得
 export async function GET(request: NextRequest) {
@@ -13,9 +14,9 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const contentType = searchParams.get('type') as ContentType | null
-    const character = searchParams.get('character') as CharacterOwner | null
-    const months = parseInt(searchParams.get('months') || '3') // デフォルト3ヶ月
+    const contentType = validateContentType(searchParams.get('type'))
+    const character = validateCharacter(searchParams.get('character'))
+    const months = validateMonths(searchParams.get('months')) || 3 // デフォルト3ヶ月
 
     // 期間の設定
     const endDate = endOfMonth(new Date())

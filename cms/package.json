@@ -24,7 +24,6 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@tanstack/react-query": "^5.51.23",
     "@tanstack/react-table": "^8.20.1",
-    "@types/nodemailer": "^6.4.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -42,6 +41,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.20",

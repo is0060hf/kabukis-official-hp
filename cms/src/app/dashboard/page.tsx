@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import DashboardStats from '@/components/dashboard/DashboardStats'
 import RecentActivity from '@/components/dashboard/RecentActivity'
 import CharacterMetrics from '@/components/dashboard/CharacterMetrics'
+import DevelopmentWarning from '@/components/dashboard/DevelopmentWarning'
 
 export default async function DashboardPage() {
   // 統計データの取得
@@ -26,6 +27,9 @@ export default async function DashboardPage() {
           傾奇ユウヤ・猫空あおば 統合管理システム
         </p>
       </div>
+
+      {/* 開発環境警告 */}
+      <DevelopmentWarning />
 
       {/* 統計カード */}
       <DashboardStats stats={stats} />

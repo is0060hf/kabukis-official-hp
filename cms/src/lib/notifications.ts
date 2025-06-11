@@ -50,12 +50,29 @@ interface NotificationOptions {
   priority?: string
 }
 
-// Discord Webhook送信
-export async function sendDiscordNotification(options: NotificationOptions) {
+// Discord Webhook URLのバリデーション
+function validateDiscordWebhookUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url)
+    return parsed.hostname === 'discord.com' && 
+           parsed.pathname.startsWith('/api/webhooks/')
+  } catch {
+    return false
+  }
+}
+
+// Discord Webhook送信（リトライ機能付き）
+export async function sendDiscordNotification(options: NotificationOptions, retryCount = 0): Promise<boolean> {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL
   if (!webhookUrl) {
-    console.warn('Discord Webhook URL not configured')
-    return
+    console.warn('[Notifications] Discord Webhook URL not configured')
+    return false
+  }
+  
+  // Discord Webhook URLのバリデーション
+  if (!validateDiscordWebhookUrl(webhookUrl)) {
+    console.error('[Notifications] Invalid Discord Webhook URL format')
+    return false
   }
 
   const characterEmoji = options.character ? CHARACTER_EMOJIS[options.character] : ''
@@ -83,33 +100,81 @@ export async function sendDiscordNotification(options: NotificationOptions) {
     })
 
     if (!response.ok) {
-      console.error('Discord notification failed:', response.statusText)
+      const errorText = await response.text()
+      console.error(`[Notifications] Discord notification failed: ${response.status} ${response.statusText}`, errorText)
+      
+      // 429 (Rate Limit) の場合はリトライ
+      if (response.status === 429 && retryCount < 3) {
+        const retryAfter = response.headers.get('Retry-After')
+        const delay = retryAfter ? parseInt(retryAfter) * 1000 : 5000
+        console.log(`[Notifications] Rate limited. Retrying after ${delay}ms...`)
+        await new Promise(resolve => setTimeout(resolve, delay))
+        return sendDiscordNotification(options, retryCount + 1)
+      }
+      
+      return false
     }
+    
+    console.log(`[Notifications] Discord notification sent successfully: ${options.title}`)
+    return true
   } catch (error) {
-    console.error('Discord notification error:', error)
+    console.error('[Notifications] Discord notification error:', error instanceof Error ? error.message : error)
+    
+    // ネットワークエラーの場合はリトライ
+    if (retryCount < 3) {
+      console.log(`[Notifications] Retrying Discord notification... (attempt ${retryCount + 1}/3)`)
+      await new Promise(resolve => setTimeout(resolve, 2000 * (retryCount + 1)))
+      return sendDiscordNotification(options, retryCount + 1)
+    }
+    
+    return false
   }
 }
 
-// メール送信
+// メール送信（リトライ機能付き）
 export async function sendEmailNotification(
   to: string,
   subject: string,
-  html: string
-) {
+  html: string,
+  retryCount = 0
+): Promise<boolean> {
   if (!process.env.EMAIL_SERVER || !transporter) {
-    console.warn('Email server not configured')
-    return
+    console.warn('[Notifications] Email server not configured')
+    return false
+  }
+
+  // メールアドレスの簡易バリデーション
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(to)) {
+    console.error(`[Notifications] Invalid email address: ${to}`)
+    return false
   }
 
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: process.env.EMAIL_FROM || 'noreply@kabukis-cms.com',
       to,
       subject,
       html,
     })
+    
+    console.log(`[Notifications] Email sent successfully: ${info.messageId}`)
+    return true
   } catch (error) {
-    console.error('Email notification error:', error)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error(`[Notifications] Email notification error: ${errorMessage}`)
+    
+    // 一時的なエラーの場合はリトライ
+    const temporaryErrors = ['ETIMEDOUT', 'ECONNREFUSED', 'EHOSTUNREACH']
+    const isTemporaryError = temporaryErrors.some(err => errorMessage.includes(err))
+    
+    if (isTemporaryError && retryCount < 3) {
+      console.log(`[Notifications] Retrying email notification... (attempt ${retryCount + 1}/3)`)
+      await new Promise(resolve => setTimeout(resolve, 3000 * (retryCount + 1)))
+      return sendEmailNotification(to, subject, html, retryCount + 1)
+    }
+    
+    return false
   }
 }
 

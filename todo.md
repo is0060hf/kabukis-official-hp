@@ -87,10 +87,14 @@
 - [ ] 時間計算のエラーハンドリング追加（/live/archive/page.tsx:238-239）
 - [ ] Studio詳細ページの画像パス修正
 - [ ] mockStems等の型定義をtypes/index.tsに追加
-- [ ] CMS: @types/nodemailerをdevDependenciesに移動
-- [ ] CMS: 分析APIのパラメータ検証強化（SQLインジェクション対策）
-- [ ] CMS: 通知システムのエラーハンドリング改善
-- [ ] CMS: Discord Webhook URLのバリデーション追加
+- [x] CMS: @types/nodemailerをdevDependenciesに移動
+- [x] CMS: 分析APIのパラメータ検証強化（SQLインジェクション対策）
+- [x] CMS: 通知システムのエラーハンドリング改善
+- [x] CMS: Discord Webhook URLのバリデーション追加
+- [x] CMS: 環境変数バリデーション - cms/src/lib/env.tsを作成して起動時チェック
+- [x] CMS: 開発環境警告 - ダッシュボードにも開発環境であることを表示
+- [x] CMS: README改善 - トラブルシューティングにPrismaエラーの対処法追加
+- [x] CMS: ENCRYPTION_KEYのサンプル値について「本番環境では必ず変更」とコメント明記
 
 ### 中優先度
 - [ ] アクセシビリティ向上（SkipToContent コンポーネント追加）

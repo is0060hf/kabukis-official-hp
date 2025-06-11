@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { LeadStatus, LeadSource, CharacterOwner } from '@/types/database'
 import { startOfMonth, endOfMonth, subMonths, startOfWeek, endOfWeek, subWeeks } from 'date-fns'
+import { validatePeriod, validateMonths, validateCharacter } from '@/lib/validation'
 
 // GET: リード分析データ取得
 export async function GET(request: NextRequest) {
@@ -13,9 +14,9 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const period = searchParams.get('period') || 'monthly' // monthly, weekly
-    const character = searchParams.get('character') as CharacterOwner | null
-    const months = parseInt(searchParams.get('months') || '6') // デフォルト6ヶ月
+    const period = validatePeriod(searchParams.get('period'))
+    const character = validateCharacter(searchParams.get('character'))
+    const months = validateMonths(searchParams.get('months'))
 
     // 期間の計算
     const now = new Date()
