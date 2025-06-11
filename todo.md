@@ -55,6 +55,10 @@
 - [ ] タグ・カテゴリフィルタ
 
 ### 中優先度
+- [ ] CMS: validation.tsの単体テスト作成（validateMonths、validateCharacter等）
+- [ ] CMS: process.exit(1)を例外スローに変更（env.ts）
+- [ ] CMS: DevelopmentWarningコンポーネントのクライアントサイド環境変数アクセス改善
+- [ ] CMS: 共通リトライユーティリティの作成（notifications.ts）
 - [ ] GitHub Release API連携
 - [ ] Hero動画の実装（aoba-nekosora）
 - [ ] 音楽プレーヤーシステム（aoba-nekosora）
