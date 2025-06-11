@@ -1,28 +1,57 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { auth } from './lib/auth'
+// import { corsMiddleware, setCorsHeaders } from './lib/cors'
+// import { auditMiddleware } from './lib/audit'
 
-export function middleware(request: NextRequest) {
-  // 認証が必要なパスの定義
-  const protectedPaths = ['/dashboard', '/leads', '/content', '/analytics']
-  const isProtectedPath = protectedPaths.some(path => 
-    request.nextUrl.pathname.startsWith(path)
-  )
+export async function middleware(request: NextRequest) {
+  // CORSプリフライトリクエストの処理
+  // const corsResponse = corsMiddleware(request)
+  // if (corsResponse) {
+  //   return corsResponse
+  // }
 
-  // 認証チェックはauth()を使用したページコンポーネント側で行う
-  // ミドルウェアでは基本的なルーティングのみ
+  // パスの取得
+  const path = request.nextUrl.pathname
   
-  return NextResponse.next()
+  // 認証が不要なパス
+  const publicPaths = ['/', '/api/auth']
+  const isPublicPath = publicPaths.some(p => path.startsWith(p))
+  
+  // 認証チェック
+  if (!isPublicPath) {
+    const session = await auth()
+    
+    if (!session) {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+  }
+  
+  // 通常のレスポンスを作成
+  const response = NextResponse.next()
+  
+  // CORSヘッダーを設定
+  // setCorsHeaders(request, response)
+  
+  // 監査ログの記録（非同期で実行）
+  // if (path.startsWith('/api/')) {
+  //   auditMiddleware(request, response).catch(console.error)
+  // }
+  
+  return response
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    // API routes
+    '/api/:path*',
+    // Protected pages
+    '/dashboard/:path*',
+    '/content/:path*',
+    '/leads/:path*',
+    '/analytics/:path*',
+    '/requests/:path*',
+    '/feedbacks/:path*',
+    '/settings/:path*',
   ],
 } 

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,35 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ========== 認証・ユーザー管理 ==========
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  image         String?
-  emailVerified DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                String             @id @default(cuid())
+  email             String             @unique
+  name              String?
+  image             String?
+  emailVerified     DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  accounts          Account[]
+  contentAnalytics  ContentAnalytics[]
+  assignedFeedbacks Feedback[]         @relation("AssignedFeedbacks")
+  feedbacks         Feedback[]
+  assignedInquiries Inquiry[]          @relation("AssignedInquiries")
+  inquiries         Inquiry[]          @relation("UserInquiries")
+  assignedLeads     Lead[]             @relation("AssignedLeads")
+  assignedRequests  Request[]          @relation("AssignedRequests")
+  requests          Request[]
+  sessions          Session[]
+  profile           UserProfile?
 
-  accounts Account[]
-  sessions Session[]
-  profile  UserProfile?
-  
-  // 関連付け
-  assignedLeads    Lead[]      @relation("AssignedLeads")
-  assignedInquiries Inquiry[]  @relation("AssignedInquiries")
-  inquiries        Inquiry[]   @relation("UserInquiries")
-  contentAnalytics ContentAnalytics[]
-  feedbacks        Feedback[]
-  requests         Request[]
-  assignedFeedbacks Feedback[] @relation("AssignedFeedbacks")
-  assignedRequests  Request[]  @relation("AssignedRequests")
-  
   @@map("users")
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
   userId            String
   type              String
   provider          String
@@ -51,8 +44,7 @@ model Account {
   id_token          String?
   session_state     String?
   createdAt         DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -64,253 +56,248 @@ model Session {
   userId       String
   expires      DateTime
   createdAt    DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
 model UserProfile {
-  id                String           @id @default(cuid())
-  userId            String           @unique
-  displayName       String?
-  bio               String?
-  websiteUrl        String?
-  twitterHandle     String?
-  discordId         String?
-  preferredCharacter CharacterType   @default(BOTH)
-  subscriptionTier  SubscriptionTier @default(FREE)
-  totalSpent        Decimal          @default(0)
-  lastActivity      DateTime?
-  marketingConsent  Boolean          @default(false)
-  isAdmin           Boolean          @default(false)
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                 String           @id @default(cuid())
+  userId             String           @unique
+  displayName        String?
+  bio                String?
+  websiteUrl         String?
+  twitterHandle      String?
+  discordId          String?
+  preferredCharacter CharacterType    @default(BOTH)
+  subscriptionTier   SubscriptionTier @default(FREE)
+  totalSpent         Decimal          @default(0)
+  lastActivity       DateTime?
+  marketingConsent   Boolean          @default(false)
+  isAdmin            Boolean          @default(false)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_profiles")
 }
 
-// ========== 顧客・リード管理 ==========
 model Lead {
-  id               String     @id @default(cuid())
-  email            String
-  name             String?
-  company          String?
-  jobTitle         String?
-  phone            String?
-  source           LeadSource
-  sourceDomain     String?    // 'yuya-kabuki.com' or 'aoba-nekosora.com'
-  sourcePage       String?    // 具体的な流入ページ
-  leadType         LeadType
-  status           LeadStatus @default(NEW)
-  priority         Priority   @default(MEDIUM)
-  estimatedValue   Decimal?
+  id                String     @id @default(cuid())
+  email             String
+  name              String?
+  company           String?
+  jobTitle          String?
+  phone             String?
+  source            LeadSource
+  sourceDomain      String?
+  sourcePage        String?
+  leadType          LeadType
+  status            LeadStatus @default(NEW)
+  priority          Priority   @default(MEDIUM)
+  estimatedValue    Decimal?
   expectedCloseDate DateTime?
-  assignedToId     String?
-  notes            String?
-  gdprConsent      Boolean    @default(false)
-  consentDate      DateTime?
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  assignedToId      String?
+  notes             String?
+  gdprConsent       Boolean    @default(false)
+  consentDate       DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  feedbacks         Feedback[]
+  inquiries         Inquiry[]
+  assignedTo        User?      @relation("AssignedLeads", fields: [assignedToId], references: [id])
+  requests          Request[]
 
-  assignedTo User?     @relation("AssignedLeads", fields: [assignedToId], references: [id])
-  inquiries  Inquiry[]
-  feedbacks  Feedback[]
-  requests   Request[]
-  
   @@map("leads")
 }
 
 model Inquiry {
-  id              String       @id @default(cuid())
-  leadId          String?
-  userId          String?
-  inquiryType     InquiryType
-  subject         String
-  message         String
-  attachments     Json?        // ファイル情報のJSON配列
-  status          InquiryStatus @default(OPEN)
-  priority        Priority      @default(MEDIUM)
-  assignedToId    String?
-  responseTimeSla Int?          // 応答時間SLA（時間）
-  firstResponseAt DateTime?
-  resolvedAt      DateTime?
+  id                 String        @id @default(cuid())
+  leadId             String?
+  userId             String?
+  inquiryType        InquiryType
+  subject            String
+  message            String
+  attachments        Json?
+  status             InquiryStatus @default(OPEN)
+  priority           Priority      @default(MEDIUM)
+  assignedToId       String?
+  responseTimeSla    Int?
+  firstResponseAt    DateTime?
+  resolvedAt         DateTime?
   satisfactionRating Int?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  assignedTo         User?         @relation("AssignedInquiries", fields: [assignedToId], references: [id])
+  lead               Lead?         @relation(fields: [leadId], references: [id])
+  user               User?         @relation("UserInquiries", fields: [userId], references: [id])
 
-  lead       Lead?  @relation(fields: [leadId], references: [id])
-  user       User?  @relation("UserInquiries", fields: [userId], references: [id])
-  assignedTo User?  @relation("AssignedInquiries", fields: [assignedToId], references: [id])
-  
   @@map("inquiries")
 }
 
-// ========== フィードバック管理 ==========
 model Feedback {
-  id              String         @id @default(cuid())
-  leadId          String?
-  userId          String?
-  characterOwner  CharacterOwner
-  feedbackType    FeedbackType
-  subject         String
-  message         String
-  rating          Int?           // 1-5の評価
-  status          FeedbackStatus @default(NEW)
-  assignedToId    String?
-  response        String?
-  respondedAt     DateTime?
-  tags            Json?          // タグ配列
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id             String         @id @default(cuid())
+  leadId         String?
+  userId         String?
+  characterOwner CharacterOwner
+  feedbackType   FeedbackType
+  subject        String
+  message        String
+  rating         Int?
+  status         FeedbackStatus @default(NEW)
+  assignedToId   String?
+  response       String?
+  respondedAt    DateTime?
+  tags           Json?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  assignedTo     User?          @relation("AssignedFeedbacks", fields: [assignedToId], references: [id])
+  lead           Lead?          @relation(fields: [leadId], references: [id])
+  user           User?          @relation(fields: [userId], references: [id])
 
-  lead       Lead?  @relation(fields: [leadId], references: [id])
-  user       User?  @relation(fields: [userId], references: [id])
-  assignedTo User?  @relation("AssignedFeedbacks", fields: [assignedToId], references: [id])
-  
   @@map("feedbacks")
 }
 
-// ========== リクエスト管理 ==========
 model Request {
-  id              String         @id @default(cuid())
-  leadId          String?
-  userId          String?
-  characterOwner  CharacterOwner
-  requestType     RequestType
-  title           String
-  description     String
-  priority        Priority       @default(MEDIUM)
-  status          RequestStatus  @default(PENDING)
-  assignedToId    String?
-  implementedAt   DateTime?
-  metadata        Json?          // 追加データ
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id             String         @id @default(cuid())
+  leadId         String?
+  userId         String?
+  characterOwner CharacterOwner
+  requestType    RequestType
+  title          String
+  description    String
+  priority       Priority       @default(MEDIUM)
+  status         RequestStatus  @default(PENDING)
+  assignedToId   String?
+  implementedAt  DateTime?
+  metadata       Json?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  assignedTo     User?          @relation("AssignedRequests", fields: [assignedToId], references: [id])
+  lead           Lead?          @relation(fields: [leadId], references: [id])
+  user           User?          @relation(fields: [userId], references: [id])
 
-  lead       Lead?  @relation(fields: [leadId], references: [id])
-  user       User?  @relation(fields: [userId], references: [id])
-  assignedTo User?  @relation("AssignedRequests", fields: [assignedToId], references: [id])
-  
   @@map("requests")
 }
 
-// ========== 分析・統計管理 ==========
 model KpiMetric {
-  id            String         @id @default(cuid())
-  metricName    String
+  id             String         @id @default(cuid())
+  metricName     String
   characterScope CharacterOwner
-  metricValue   Decimal
-  metricDate    DateTime
-  periodType    PeriodType
-  metadata      Json?
-  createdAt     DateTime       @default(now())
-  
+  metricValue    Decimal
+  metricDate     DateTime
+  periodType     PeriodType
+  metadata       Json?
+  createdAt      DateTime       @default(now())
+
   @@unique([metricName, characterScope, metricDate, periodType])
   @@map("kpi_metrics")
 }
 
 model RevenueAnalytics {
-  id                  String         @id @default(cuid())
-  date                DateTime
+  id                   String         @id @default(cuid())
+  date                 DateTime
   characterAttribution CharacterOwner
-  revenueSource       RevenueSource
-  amount              Decimal
-  currency            String         @default("JPY")
-  customerCount       Int?
-  newCustomerCount    Int?
-  createdAt           DateTime       @default(now())
-  
+  revenueSource        RevenueSource
+  amount               Decimal
+  currency             String         @default("JPY")
+  customerCount        Int?
+  newCustomerCount     Int?
+  createdAt            DateTime       @default(now())
+
   @@map("revenue_analytics")
 }
 
-// ========== コンテンツ管理 ==========
 model Content {
-  id            String         @id @default(cuid())
-  title         String
-  slug          String         @unique
-  content       String?
-  excerpt       String?
-  characterOwner CharacterOwner
-  contentType   ContentType
-  status        ContentStatus  @default(DRAFT)
-  featured      Boolean        @default(false)
-  viewCount     Int            @default(0)
-  likeCount     Int            @default(0)
-  downloadCount Int            @default(0)
-  seoTitle      String?
-  seoDescription String?
-  tags          Json?          // タグ配列
-  metadata      Json?          // 追加メタデータ
-  publishedAt   DateTime?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id                       String                     @id @default(cuid())
+  title                    String
+  slug                     String                     @unique
+  content                  String?
+  excerpt                  String?
+  characterOwner           CharacterOwner
+  contentType              ContentType
+  status                   ContentStatus              @default(DRAFT)
+  featured                 Boolean                    @default(false)
+  viewCount                Int                        @default(0)
+  likeCount                Int                        @default(0)
+  downloadCount            Int                        @default(0)
+  seoTitle                 String?
+  seoDescription           String?
+  tags                     Json?
+  metadata                 Json?
+  publishedAt              DateTime?
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  ContentToContentCategory ContentToContentCategory[]
+  analytics                ContentAnalytics[]
 
-  categories ContentCategory[]
-  analytics  ContentAnalytics[]
-  
   @@map("contents")
 }
 
 model ContentCategory {
-  id             String         @id @default(cuid())
-  name           String
-  slug           String         @unique
-  characterScope CharacterOwner
-  description    String?
-  parentId       String?
-  sortOrder      Int            @default(0)
-  createdAt      DateTime       @default(now())
+  id                       String                     @id @default(cuid())
+  name                     String
+  slug                     String                     @unique
+  characterScope           CharacterOwner
+  description              String?
+  parentId                 String?
+  sortOrder                Int                        @default(0)
+  createdAt                DateTime                   @default(now())
+  ContentToContentCategory ContentToContentCategory[]
+  parent                   ContentCategory?           @relation("CategoryTree", fields: [parentId], references: [id])
+  children                 ContentCategory[]          @relation("CategoryTree")
 
-  parent   ContentCategory?  @relation("CategoryTree", fields: [parentId], references: [id])
-  children ContentCategory[] @relation("CategoryTree")
-  contents Content[]
-  
   @@map("content_categories")
 }
 
 model ContentAnalytics {
-  id         String      @id @default(cuid())
-  contentId  String
-  userId     String?
-  eventType  EventType
-  referrer   String?
-  userAgent  String?
-  ipAddress  String?
-  sessionId  String?
-  createdAt  DateTime    @default(now())
+  id        String    @id @default(cuid())
+  contentId String
+  userId    String?
+  eventType EventType
+  referrer  String?
+  userAgent String?
+  ipAddress String?
+  sessionId String?
+  createdAt DateTime  @default(now())
+  content   Content   @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  user      User?     @relation(fields: [userId], references: [id])
 
-  content Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
-  user    User?   @relation(fields: [userId], references: [id])
-  
   @@map("content_analytics")
 }
 
-// ========== 配信スケジュール管理 ==========
 model StreamSchedule {
-  id              String         @id @default(cuid())
-  title           String
-  description     String?
-  characterOwner  CharacterOwner
-  streamType      StreamType
-  scheduledDate   DateTime
-  duration        Int?           // 分単位
-  platform        String         // YouTube, Twitch, etc.
-  streamUrl       String?
-  thumbnailUrl    String?
-  isRecurring     Boolean        @default(false)
-  recurringPattern Json?         // 繰り返しパターン
-  status          StreamStatus   @default(SCHEDULED)
-  notified        Boolean        @default(false)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  
+  id               String         @id @default(cuid())
+  title            String
+  description      String?
+  characterOwner   CharacterOwner
+  streamType       StreamType
+  scheduledDate    DateTime
+  duration         Int?
+  platform         String
+  streamUrl        String?
+  thumbnailUrl     String?
+  isRecurring      Boolean        @default(false)
+  recurringPattern Json?
+  status           StreamStatus   @default(SCHEDULED)
+  notified         Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
   @@map("stream_schedules")
 }
 
-// ========== Enums ==========
+model ContentToContentCategory {
+  A                  String
+  B                  String
+  contents           Content         @relation(fields: [A], references: [id], onDelete: Cascade)
+  content_categories ContentCategory @relation(fields: [B], references: [id], onDelete: Cascade)
+
+  @@unique([A, B], map: "_ContentToContentCategory_AB_unique")
+  @@index([B], map: "_ContentToContentCategory_B_index")
+  @@map("_ContentToContentCategory")
+}
+
 enum CharacterType {
   YUYA
   AOBA
@@ -463,4 +450,4 @@ enum RevenueSource {
   SUBSCRIPTIONS
   LICENSING
   OTHER
-} 
+}

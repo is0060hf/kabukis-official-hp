@@ -45,10 +45,13 @@ export async function GET(request: NextRequest) {
       prisma.content.findMany({
         where,
         include: {
-          categories: true,
+          // カテゴリ関連付けは一時的にコメントアウト
+          // categories: true,
           _count: {
-            select: { analytics: true }
-          }
+            select: {
+              analytics: true,
+            },
+          },
         },
         skip: (page - 1) * limit,
         take: limit,
@@ -107,15 +110,17 @@ export async function POST(request: NextRequest) {
         ...(validatedData.status === 'PUBLISHED' && {
           publishedAt: new Date(),
         }),
-        ...(categoryIds && {
-          categories: {
-            connect: categoryIds.map(id => ({ id })),
-          },
-        }),
+        // カテゴリ関連付けは一時的にコメントアウト
+        // ...(categoryIds && {
+        //   categories: {
+        //     connect: categoryIds.map(id => ({ id })),
+        //   },
+        // }),
       },
-      include: {
-        categories: true,
-      },
+      // カテゴリ関連付けは一時的にコメントアウト
+      // include: {
+      //   categories: true,
+      // },
     })
 
     return NextResponse.json(content, { status: 201 })

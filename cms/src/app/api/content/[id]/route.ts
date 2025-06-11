@@ -36,17 +36,18 @@ export async function GET(
 
     const { id } = await params
 
-    const content = await prisma.content.findUnique({
+    const content = await prisma.content.findFirst({
       where: { id },
       include: {
-        categories: true,
         analytics: {
           select: {
             eventType: true,
-            createdAt: true,
           },
-          orderBy: { createdAt: 'desc' },
-          take: 100,
+        },
+        _count: {
+          select: {
+            analytics: true,
+          },
         },
       },
     })
@@ -114,14 +115,12 @@ export async function PUT(
             currentContent?.status !== 'PUBLISHED' && {
           publishedAt: new Date(),
         }),
-        ...(categoryIds && {
-          categories: {
-            set: categoryIds.map(id => ({ id })),
-          },
-        }),
-      },
-      include: {
-        categories: true,
+        // カテゴリ関連付けは一時的にコメントアウト
+        // ...(categoryIds && {
+        //   categories: {
+        //     set: categoryIds.map(id => ({ id })),
+        //   },
+        // }),
       },
     })
 
